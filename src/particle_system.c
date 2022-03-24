@@ -1,0 +1,141 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <inttypes.h>
+#include "particle_system.h"
+#include "tigr.h"
+
+#define GRAVITY 800
+#define PARTICLE_COUNT 256
+#define PIXEL_WORLD_HEIGHT (256)
+#define PIXEL_WORLD_WIDTH (320*3)
+#define LOGICAL_WORLD_HEIGHT (PIXEL_WORLD_HEIGHT << 16)
+#define LOGICAL_WORLD_WIDTH (PIXEL_WORLD_WIDTH << 16)
+
+struct Particle {
+	int32_t logical_world_xpos;
+	int32_t logical_world_ypos;
+	int32_t logical_world_xadd;
+	int32_t logical_world_yadd;
+    int16_t time_to_live;
+    struct Particle *next;
+};
+
+struct Particle particles[PARTICLE_COUNT];
+
+struct Particle *first_active_particle;
+struct Particle *first_free_particle;
+
+void particle_system_init()
+{
+    first_active_particle = NULL;
+
+    first_free_particle = particles;
+    for (int index = 0; index < PARTICLE_COUNT - 1; index++) {
+		particles[index].next = &particles[index + 1];
+    }
+
+    particles[PARTICLE_COUNT - 1].next = NULL;
+}
+
+void particle_system_update_system()
+{
+    struct Particle *tmp_particle;
+    struct Particle *current_particle = first_active_particle;
+    struct Particle **last_unkilled_particle_next_ptr = &first_active_particle;
+    uint16_t particle_killed;
+
+    while (current_particle) {
+        particle_killed = 0;
+
+        current_particle->time_to_live--;
+        if (current_particle->time_to_live == 0) {
+            particle_killed = 1;
+        } else {
+            // update properties of particle
+            current_particle->logical_world_yadd += GRAVITY;
+            current_particle->logical_world_ypos += current_particle->logical_world_yadd;
+            if (current_particle->logical_world_ypos > LOGICAL_WORLD_HEIGHT - 1) {
+                particle_killed = 1;
+            } else {
+                current_particle->logical_world_xpos += current_particle->logical_world_xadd;
+                if (current_particle->logical_world_xpos < 0) {
+                    current_particle->logical_world_xpos += LOGICAL_WORLD_WIDTH;
+                } else if (current_particle->logical_world_xpos > LOGICAL_WORLD_HEIGHT - 1) {
+                    current_particle->logical_world_xpos -= LOGICAL_WORLD_WIDTH;
+                }
+            }
+        }
+
+        if (particle_killed) {
+            // remove dead particle from the active list
+            *last_unkilled_particle_next_ptr = current_particle->next;
+
+            // add dead particle to the start of the free list
+            tmp_particle = first_free_particle;
+            first_free_particle = current_particle;
+            current_particle = current_particle->next; 
+            first_free_particle->next = tmp_particle;
+        } else {
+            last_unkilled_particle_next_ptr = &(current_particle->next);
+            current_particle = current_particle->next;
+        }
+    }
+}
+
+void particle_system_spawn(int32_t logical_world_xpos, int32_t logical_world_ypos)
+{
+    struct Particle *new_particle;
+    struct Particle *tmp_particle;
+
+    if (first_free_particle) {
+        // remove new particle from start of free list
+        new_particle = first_free_particle;
+        first_free_particle = new_particle->next;
+
+        // insert new particle at start of active list
+        tmp_particle = first_active_particle;
+        first_active_particle = new_particle;
+        new_particle->next = tmp_particle;
+
+        new_particle->logical_world_xpos = logical_world_xpos;
+        new_particle->logical_world_ypos = logical_world_ypos;
+        new_particle->logical_world_xadd = (rand() % 80000) - 40000;
+        new_particle->logical_world_yadd = -(rand() % 100000);
+        new_particle->time_to_live = rand() % 511;
+    }
+}
+
+int main(int argc, char *argv[])
+{
+    int frame_index;
+
+    struct Particle *current_particle;
+    Tigr *screen = tigrWindow(320, 200, "Hello", 0);
+    particle_system_init();
+    while (!tigrClosed(screen))
+    {
+        particle_system_spawn(160<<16, 100<<16);
+        tigrClear(screen, tigrRGB(0x10, 0x10, 0x10));
+        current_particle = first_active_particle;
+
+        while (current_particle) {
+            tigrPlot(
+                screen,
+                current_particle->logical_world_xpos >> 16,
+                current_particle->logical_world_ypos >> 16,
+                tigrRGB(
+                    0xff,
+                    0xaa,
+                    0x00
+                )
+            );
+
+            current_particle = current_particle->next;
+        }
+        
+        particle_system_update_system();
+        tigrUpdate(screen);
+        frame_index++;
+    }
+    tigrFree(screen);
+}
