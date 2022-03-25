@@ -1,10 +1,9 @@
 #include <mint/osbind.h>
 #include <mint/sysbind.h>
-#include 
+#include "game_loop.h"
 
 void main_supervisor() {
-    initialise();
-    while (1) {}
+    game_loop();
 }
 
 int main(int argc, char **argv)

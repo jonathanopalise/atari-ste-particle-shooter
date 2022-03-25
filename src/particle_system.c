@@ -2,23 +2,10 @@
 #include <stdlib.h>
 #include <inttypes.h>
 #include "particle_system.h"
-#include "tigr.h"
+#include "particle_common.h"
+#include "hardware_playfield.h"
 
 #define GRAVITY 800
-#define PARTICLE_COUNT 256
-#define PIXEL_WORLD_HEIGHT (256)
-#define PIXEL_WORLD_WIDTH (320*3)
-#define LOGICAL_WORLD_HEIGHT (PIXEL_WORLD_HEIGHT << 16)
-#define LOGICAL_WORLD_WIDTH (PIXEL_WORLD_WIDTH << 16)
-
-struct Particle {
-	int32_t logical_world_xpos;
-	int32_t logical_world_ypos;
-	int32_t logical_world_xadd;
-	int32_t logical_world_yadd;
-    int16_t time_to_live;
-    struct Particle *next;
-};
 
 struct Particle particles[PARTICLE_COUNT];
 
@@ -52,17 +39,12 @@ void particle_system_update_system()
             particle_killed = 1;
         } else {
             // update properties of particle
-            current_particle->logical_world_yadd += GRAVITY;
-            current_particle->logical_world_ypos += current_particle->logical_world_yadd;
-            if (current_particle->logical_world_ypos > LOGICAL_WORLD_HEIGHT - 1) {
+            current_particle->precision_world_yadd += GRAVITY;
+            current_particle->precision_world_ypos += current_particle->precision_world_yadd;
+            if (current_particle->precision_world_ypos > HARDWARE_PLAYFIELD_HEIGHT - 1) {
                 particle_killed = 1;
             } else {
-                current_particle->logical_world_xpos += current_particle->logical_world_xadd;
-                if (current_particle->logical_world_xpos < 0) {
-                    current_particle->logical_world_xpos += LOGICAL_WORLD_WIDTH;
-                } else if (current_particle->logical_world_xpos > LOGICAL_WORLD_HEIGHT - 1) {
-                    current_particle->logical_world_xpos -= LOGICAL_WORLD_WIDTH;
-                }
+                current_particle->precision_world_xpos += current_particle->precision_world_xadd;
             }
         }
 
@@ -82,7 +64,7 @@ void particle_system_update_system()
     }
 }
 
-void particle_system_spawn(int32_t logical_world_xpos, int32_t logical_world_ypos)
+void particle_system_spawn(int32_t precision_world_xpos, int32_t precision_world_ypos)
 {
     struct Particle *new_particle;
     struct Particle *tmp_particle;
@@ -97,15 +79,15 @@ void particle_system_spawn(int32_t logical_world_xpos, int32_t logical_world_ypo
         first_active_particle = new_particle;
         new_particle->next = tmp_particle;
 
-        new_particle->logical_world_xpos = logical_world_xpos;
-        new_particle->logical_world_ypos = logical_world_ypos;
-        new_particle->logical_world_xadd = (rand() % 80000) - 40000;
-        new_particle->logical_world_yadd = -(rand() % 100000);
+        new_particle->precision_world_xpos = precision_world_xpos;
+        new_particle->precision_world_ypos = precision_world_ypos;
+        new_particle->precision_world_xadd = (rand() % 80000) - 40000;
+        new_particle->precision_world_yadd = -(rand() % 100000);
         new_particle->time_to_live = rand() % 511;
     }
 }
 
-int main(int argc, char *argv[])
+/*int main(int argc, char *argv[])
 {
     int frame_index;
 
@@ -121,12 +103,12 @@ int main(int argc, char *argv[])
         while (current_particle) {
             tigrPlot(
                 screen,
-                current_particle->logical_world_xpos >> 16,
-                current_particle->logical_world_ypos >> 16,
+                current_particle->precision_world_xpos >> 16,
+                current_particle->precision_world_ypos >> 16,
                 tigrRGB(
                     0xff,
-                    0xaa,
-                    0x00
+                    0xff,
+                    0xff
                 )
             );
 
@@ -138,4 +120,4 @@ int main(int argc, char *argv[])
         frame_index++;
     }
     tigrFree(screen);
-}
+}*/
