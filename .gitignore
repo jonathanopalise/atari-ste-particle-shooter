@@ -1,0 +1,6 @@
+*.o
+*.elf
+*.prg
+*.swp
+src/generated/*.c
+src/generated/*.s

@@ -22,14 +22,14 @@ void hardware_viewport_handle_vbl()
     uint8_t address_mid_byte = (uint8_t)((visible_buffer_address >> 8) && 0xff);
     uint8_t address_low_byte = (uint8_t)(visible_buffer_address & 0xff);
 
-    *((uint8_t *)0xffff8201) = address_high_byte;
-    *((uint8_t *)0xffff8203) = address_mid_byte;
-    *((uint8_t *)0xffff820d) = address_low_byte;
+    *((volatile uint8_t *)0xffff8201) = address_high_byte;
+    *((volatile uint8_t *)0xffff8203) = address_mid_byte;
+    *((volatile uint8_t *)0xffff820d) = address_low_byte;
 
-    *((uint8_t *)0xffff820f) = ADDITIONAL_WORDS_PER_LINE;
-    *((uint8_t *)0xffff8265) = (uint8_t)(horizontal_offset & 15); // fine pixel scroll
+    *((volatile uint8_t *)0xffff820f) = ADDITIONAL_WORDS_PER_LINE;
+    *((volatile uint8_t *)0xffff8265) = (uint8_t)(horizontal_offset & 15); // fine pixel scroll
 
-    *((uint8_t *)0xffff8205) = address_high_byte;
-    *((uint8_t *)0xffff8207) = address_mid_byte;
-    *((uint8_t *)0xffff820d) = address_low_byte;
+    *((volatile uint8_t *)0xffff8205) = address_high_byte;
+    *((volatile uint8_t *)0xffff8207) = address_mid_byte;
+    *((volatile uint8_t *)0xffff820d) = address_low_byte;
 }

@@ -36,7 +36,7 @@ src/particle_system.o: src/particle_system.c src/particle_system.h src/particle_
 src/particle_render.o: src/particle_render.c src/hardware.h src/hardware_playfield.h src/hardware_viewport.h src/logical_viewport.h src/movep.h src/or_table.h src/particle_common.h src/particle_system.h src/viewport.h
 	$(CC) $(CFLAGS) -c src/particle_render.c -o src/particle_render.o
 
-src/vbl_handler.o: src/vbl_handler.c src/vbl_handler.h
+src/vbl_handler.o: src/vbl_handler.c src/vbl_handler.h src/hardware_playfield.h src/hardware_viewport.h
 	$(CC) $(CFLAGS) -c src/vbl_handler.c -o src/vbl_handler.o
 
 src/generated/or_table.o: src/generated/or_table.c src/or_table.h
