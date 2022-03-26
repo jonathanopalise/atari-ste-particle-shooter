@@ -1,5 +1,7 @@
 #include <inttypes.h>
+#include <string.h>
 #include "hardware_playfield.h"
+#include "hardware_playfield_restore_buffer.h"
 #include "logical_playfield.h"
 
 /*
@@ -16,7 +18,7 @@
 struct HardwarePlayfield *hidden_hardware_playfield;
 struct HardwarePlayfield *visible_hardware_playfield;
 
-uint8_t hardware_playfield_restore_buffer[HARDWARE_PLAYFIELD_BUFFER_SIZE_BYTES];
+//uint8_t hardware_playfield_restore_buffer[HARDWARE_PLAYFIELD_BUFFER_SIZE_BYTES];
 
 struct HardwarePlayfield hardware_playfield_1;
 struct HardwarePlayfield hardware_playfield_2;
@@ -37,6 +39,12 @@ void hardware_playfield_reset()
 
 static void hardware_playfield_init_playfield(struct HardwarePlayfield *hardware_playfield)
 {
+    memcpy(
+        hardware_playfield->buffer,
+        hardware_playfield_restore_buffer,
+        HARDWARE_PLAYFIELD_BUFFER_SIZE_BYTES
+    );
+
     hardware_playfield->particles_drawn = 0;
 }
 

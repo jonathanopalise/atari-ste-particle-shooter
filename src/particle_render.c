@@ -1,5 +1,6 @@
 #include "hardware.h"
 #include "hardware_playfield.h"
+#include "hardware_playfield_restore_buffer.h"
 #include "hardware_viewport.h"
 #include "logical_viewport.h"
 #include "movep.h"

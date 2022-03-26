@@ -18,7 +18,7 @@ struct HardwarePlayfield {
 extern struct HardwarePlayfield *hidden_hardware_playfield;
 extern struct HardwarePlayfield *visible_hardware_playfield;
 
-extern uint8_t hardware_playfield_restore_buffer[HARDWARE_PLAYFIELD_BUFFER_SIZE_BYTES];
+//extern uint8_t hardware_playfield_restore_buffer[HARDWARE_PLAYFIELD_BUFFER_SIZE_BYTES];
 
 void hardware_playfield_handle_vbl();
 void hardware_playfield_init();
