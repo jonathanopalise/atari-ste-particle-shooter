@@ -42,7 +42,7 @@ void particle_render_draw_particles()
     uint32_t *current_particle_draw_offset = hidden_hardware_playfield->particle_draw_offsets;
 
     // TODO: this needs to go in a common location
-    logical_viewport_right_xpos = logical_viewport_left_xpos + (VIEWPORT_WIDTH - 1);
+    logical_viewport_right_xpos = logical_viewport_left_xpos + (VIEWPORT_WIDTH - 30);
 
     uint16_t hardware_viewport_left_xpos = hardware_viewport_get_left_xpos();
 
@@ -54,25 +54,30 @@ void particle_render_draw_particles()
         if (logical_viewport_particle_ypos >= 0 &&
             logical_viewport_particle_ypos < VIEWPORT_HEIGHT &&
             logical_viewport_particle_xpos >= logical_viewport_left_xpos &&
-            logical_viewport_particle_ypos <= logical_viewport_right_xpos
+            logical_viewport_particle_xpos <= logical_viewport_right_xpos
         ) {
             // calculate the pixel xpos within the hardware viewport for this particle
             hardware_viewport_particle_xpos = hardware_viewport_left_xpos + 
                 (logical_viewport_particle_xpos - logical_viewport_left_xpos);
 
+            /*if ((hardware_viewport_particle_xpos < 0) || (hardware_viewport_particle_xpos > (HARDWARE_PLAYFIELD_WIDTH-1))) {
+                while (1==1) {}
+            }*/
+
             // calculate the address of the 16 pixel block within the hardware
             // playfield for this particle
+            // 480 is hardware playfield bytes per line - need constant
             hardware_playfield_particle_offset =
-                (VIEWPORT_BYTES_PER_LINE * logical_viewport_particle_ypos) +
-                ((hardware_viewport_particle_xpos >> 4) << 3);
+                (480 * logical_viewport_particle_ypos) +
+                ((hardware_viewport_particle_xpos >> 1) & 0xfffffff8);
 
             // is this one of the first 8 pixels in the 16 pixel block?
             // if not, advance the destination address by one byte
-            if (!(hardware_viewport_particle_xpos & 8)) {
+            if ((hardware_viewport_particle_xpos & 8)) {
                 hardware_playfield_particle_offset++;
             }
 
-            or_table_mask_offset = (hardware_playfield_particle_offset & 7) << 4;
+            or_table_mask_offset = (hardware_viewport_particle_xpos & 7) << 4;
             or_table_colour_offset = or_table_mask_offset + PARTICLE_COLOUR;
 
             // movep from parameter 1 into register

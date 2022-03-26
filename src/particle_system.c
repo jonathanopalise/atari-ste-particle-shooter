@@ -83,8 +83,8 @@ void particle_system_spawn(int32_t precision_world_xpos, int32_t precision_world
         new_particle->precision_world_xpos = precision_world_xpos;
         new_particle->precision_world_ypos = precision_world_ypos;
         new_particle->precision_world_xadd = (rand() % 80000) - 40000;
-        new_particle->precision_world_yadd = -(rand() % 100000);
-        new_particle->time_to_live = rand() % 511;
+        new_particle->precision_world_yadd = -(rand() % 400000);
+        new_particle->time_to_live = rand() % 1023;
     }
 }
 
