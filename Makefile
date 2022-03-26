@@ -5,7 +5,7 @@ VASM_OPTS = -no-opt
 VLINK = vlink
 PHP = php
 
-OBJECT_FILES = src/shooter.o src/movep.o src/game_loop.o src/hardware_playfield.o src/generated/hardware_playfield_restore_buffer.o src/hardware_viewport.o src/logical_viewport.o src/particle_system.o src/particle_render.o src/vbl_handler.o src/generated/or_table.o src/initialise.o
+OBJECT_FILES = src/shooter.o src/movep.o src/game_loop.o src/hardware_playfield.o src/generated/hardware_playfield_restore_buffer.o src/hardware_viewport.o src/logical_viewport.o src/particle_system.o src/particle_render.o src/vbl_handler.o src/generated/or_table.o src/generated/palette.o src/initialise.o
 
 bin/shooter.prg: $(OBJECT_FILES)
 	$(CC) -o src/shooter.elf libcxx/brownboot.o libcxx/browncrti.o libcxx/browncrtn.o libcxx/browncrt++.o libcxx/zerolibc.o libcxx/zerocrtfini.o $(OBJECT_FILES) -O3 -Wl,--emit-relocs -Wl,-e_start -Ttext=0 -nostartfiles -m68000 -Ofast -fomit-frame-pointer -D__ATARI__ -D__M68000__ -DELF_CONFIG_STACK=1024 -fstrict-aliasing -fcaller-saves -flto -ffunction-sections -fdata-sections -fleading-underscore
@@ -21,7 +21,7 @@ src/movep.o: src/movep.s src/movep.h
 src/game_loop.o: src/game_loop.c src/game_loop.h src/hardware_playfield.h src/hardware_viewport.h src/initialise.h src/particle_system.h src/vbl_handler.h
 	$(CC) $(CFLAGS) -c src/game_loop.c -o src/game_loop.o
 
-src/hardware_playfield.o: src/hardware_playfield.c src/hardware_playfield.h src/particle_common.h src/logical_playfield.h
+src/hardware_playfield.o: src/hardware_playfield.c src/hardware_playfield.h src/particle_common.h src/logical_playfield.h src/palette.h
 	$(CC) $(CFLAGS) -c src/hardware_playfield.c -o src/hardware_playfield.o
 
 src/hardware_viewport.o: src/hardware_viewport.c src/hardware_viewport.h src/logical_viewport.h src/hardware_playfield.h
@@ -50,6 +50,12 @@ src/generated/hardware_playfield_restore_buffer.o: src/generated/hardware_playfi
 
 src/generated/or_table.c: src/generate_or_table.php
 	$(PHP) src/generate_or_table.php > src/generated/or_table.c
+
+src/generated/palette.o: src/generated/palette.s
+	$(VASM) $(VASM_OPTS) src/generated/palette.s -Felf -o src/generated/palette.o
+
+src/generated/palette.s: $(ASSETS_GIF) src/generate_palette.php
+	$(PHP) src/generate_palette.php assets/clouds.gif src/generated/palette.s
 
 src/initialise.o: src/initialise.s
 	$(VASM) $(VASM_OPTS) src/initialise.s -Felf -o src/initialise.o

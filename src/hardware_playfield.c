@@ -3,6 +3,7 @@
 #include "hardware_playfield.h"
 #include "hardware_playfield_restore_buffer.h"
 #include "logical_playfield.h"
+#include "palette.h"
 
 /*
  * hardware playfield xpos offset will range from 0 to 639
@@ -50,6 +51,8 @@ static void hardware_playfield_init_playfield(struct HardwarePlayfield *hardware
 
 void hardware_playfield_init()
 {
+    memcpy((void *)0xffff8240, palette, 32);
+
     visible_hardware_playfield = &hardware_playfield_1;
     hidden_hardware_playfield = &hardware_playfield_2;
 
