@@ -4,6 +4,7 @@
 #include "particle_system.h"
 #include "particle_common.h"
 #include "hardware_playfield.h"
+#include "tigr.h"
 
 #define GRAVITY 800
 
@@ -41,7 +42,7 @@ void particle_system_update_system()
             // update properties of particle
             current_particle->precision_world_yadd += GRAVITY;
             current_particle->precision_world_ypos += current_particle->precision_world_yadd;
-            if (current_particle->precision_world_ypos > HARDWARE_PLAYFIELD_HEIGHT - 1) {
+            if (current_particle->precision_world_ypos > (HARDWARE_PLAYFIELD_HEIGHT << 16) - 1) {
                 particle_killed = 1;
             } else {
                 current_particle->precision_world_xpos += current_particle->precision_world_xadd;

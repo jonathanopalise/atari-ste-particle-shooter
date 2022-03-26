@@ -1,4 +1,5 @@
 #include "game_loop.h"
+#include "hardware_playfield.h"
 #include "initialise.h"
 #include "logical_viewport.h"
 #include "particle_render.h"
@@ -20,6 +21,7 @@ void game_loop()
         waiting_for_vbl = 1;
         while (waiting_for_vbl) {}
 
+        particle_system_spawn(((logical_viewport_left_xpos + 160) << 16), 100 << 16);
         logical_viewport_left_xpos++;
     }
 }
