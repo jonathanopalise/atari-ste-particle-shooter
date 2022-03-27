@@ -3,9 +3,11 @@
 #include "hardware_playfield_restore_buffer.h"
 #include "hardware_playfield_ypos_lookup.h"
 #include "hardware_viewport_xpos_lookup.h"
+#include "or_table_mask_lookup.h"
 #include "hardware_viewport.h"
 #include "logical_viewport.h"
 #include "movep.h"
+#include "particle_render_erase_particles_inner.h"
 #include "or_table.h"
 #include "particle_common.h"
 #include "particle_system.h"
@@ -41,11 +43,7 @@ void particle_render_draw_particles()
 
         // we're only checking the particle against the top of the screen
         // so make sure that particle system is updated immediately after spawning new particles
-        if (logical_viewport_particle_ypos >= 0 //&&
-//            logical_viewport_particle_ypos < VIEWPORT_HEIGHT &&
-//            logical_viewport_particle_xpos >= logical_viewport_left_xpos &&
-//            logical_viewport_particle_xpos <= logical_viewport_right_xpos
-        ) {
+        if (logical_viewport_particle_ypos >= 0) {
             // calculate the pixel xpos within the hardware viewport for this particle
             hardware_viewport_particle_xpos = hardware_viewport_left_xpos + 
                 (logical_viewport_particle_xpos - logical_viewport_left_xpos);
@@ -57,7 +55,7 @@ void particle_render_draw_particles()
                 hardware_playfield_ypos_lookup[logical_viewport_particle_ypos] +
                 hardware_viewport_xpos_lookup[hardware_viewport_particle_xpos];
 
-            or_table_mask_offset = (hardware_viewport_particle_xpos & 7) << 4;
+            or_table_mask_offset = or_table_mask_lookup[hardware_viewport_particle_xpos];
             or_table_colour_offset = or_table_mask_offset + PARTICLE_COLOUR;
 
             movep_plot_pixel(
@@ -78,20 +76,25 @@ void particle_render_draw_particles()
 
 void particle_render_erase_particles()
 {
-    uint8_t *hardware_playfield_buffer = hidden_hardware_playfield->buffer;
-    uint32_t *current_particle_draw_offset = hidden_hardware_playfield->particle_draw_offsets;
-    uint32_t hardware_playfield_particle_offset;
+    //uint8_t *hardware_playfield_buffer = hidden_hardware_playfield->buffer;
+    //uint32_t *current_particle_draw_offset = hidden_hardware_playfield->particle_draw_offsets;
+    //uint32_t hardware_playfield_particle_offset;
 
-    for (int index = 0; index < hidden_hardware_playfield->particles_drawn; index++) {
+    particle_render_erase_particles_inner(
+        hidden_hardware_playfield->particles_drawn,
+        hidden_hardware_playfield->particle_draw_offsets,
+        hardware_playfield_restore_buffer,
+        hidden_hardware_playfield->buffer
+    );
+
+    /*for (int index = hidden_hardware_playfield->particles_drawn; index > 0; index--) {
         hardware_playfield_particle_offset = *current_particle_draw_offset++;
 
-        // movep from parameter 1 into register
-        // movep from register into parameter 2
         movep_restore_pixel(
             &hardware_playfield_restore_buffer[hardware_playfield_particle_offset],
             &hardware_playfield_buffer[hardware_playfield_particle_offset]
         );
-    }
+    }*/
 }
 
 
