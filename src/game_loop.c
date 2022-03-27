@@ -29,6 +29,7 @@ void game_loop()
 
         particle_system_spawn(((logical_viewport_left_xpos + 160) << 16), 100 << 16);
         particle_system_spawn(((logical_viewport_left_xpos + 160) << 16), 100 << 16);
+        particle_system_spawn(((logical_viewport_left_xpos + 160) << 16), 100 << 16);
 
         logical_viewport_left_xpos++;
     }

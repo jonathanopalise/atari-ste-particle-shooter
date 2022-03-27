@@ -11,7 +11,7 @@
 
 struct HardwarePlayfield {
    uint8_t buffer[HARDWARE_PLAYFIELD_BUFFER_SIZE_BYTES];
-   uint32_t particle_draw_offsets[PARTICLE_COUNT];
+   uint8_t *particle_draw_pointers[PARTICLE_COUNT];
    uint16_t particles_drawn;
 };
 
