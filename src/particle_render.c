@@ -1,6 +1,7 @@
 #include "hardware.h"
 #include "hardware_playfield.h"
 #include "hardware_playfield_restore_buffer.h"
+#include "hardware_playfield_ypos_lookup.h"
 #include "hardware_viewport.h"
 #include "logical_viewport.h"
 #include "movep.h"
@@ -11,20 +12,6 @@
 
 #define VIEWPORT_BYTES_PER_LINE (PIXELS_TO_BYTES(VIEWPORT_WIDTH))
 #define PARTICLE_COLOUR 15
-
-/*
- * 1) erase particles from buffer 1 using buffer 1 playfield_draw_offsets
- *    (erase sprites from buffer 1)
- * 2) render particles to buffer 1 and store destination addresses in buffer 1 playfield_draw_offsets
- *    (render sprites to buffer 1)
- * 2) move buffer 1 to physical and buffer 2 to logical
- * 3) buffer 1 is now visible, buffer 2 is now hidden
- * 4) erase particles from buffer 2 using buffer 2 playfield_draw_offsets
- *    (erase sprites from buffer 2)
- * 5) render particles to buffer 2 and store destination addresses in buffer 2 playfield_draw_offsets
- *    (render sprites to buffer 2)
- * 6) move buffer 2 to physical and buffer 1 to logical
- */
 
 void particle_render_draw_particles()
 {
@@ -64,7 +51,7 @@ void particle_render_draw_particles()
             // playfield for this particle
             // 480 is hardware playfield bytes per line - need constant
             hardware_playfield_particle_offset =
-                (480 * logical_viewport_particle_ypos) +
+                hardware_playfield_ypos_lookup[logical_viewport_particle_ypos] +
                 ((hardware_viewport_particle_xpos >> 1) & 0xfffffff8);
 
             // is this one of the first 8 pixels in the 16 pixel block?
