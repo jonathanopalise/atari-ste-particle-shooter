@@ -15,9 +15,8 @@ _particle_render_erase_particles_inner:
 
     bra.s .end_loop
 .loop:
-    move.l (a0)+,d1  ; get offset and move to next offset address
-    move.l a1,a3     ; a3 = restore buffer base address
-    add.l d1,a3      ; add offset to base address
+    move.l (a0)+,a3  ; get offset and move to next offset address
+    sub.l a2,a3
     movep.l 0(a3),d2 ; read source
     add.l a2,a3
     movep.l d2,0(a3) ; restore pixel

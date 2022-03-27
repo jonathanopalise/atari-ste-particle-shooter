@@ -64,7 +64,7 @@ void particle_render_draw_particles()
                 or_table[or_table_colour_offset]
             );
 
-            *current_particle_draw_offset++ = hardware_playfield_particle_offset;
+            *current_particle_draw_offset++ = &hardware_playfield_buffer[hardware_playfield_particle_offset];
             particles_drawn++;
         }
 
