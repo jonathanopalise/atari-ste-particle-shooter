@@ -18,8 +18,12 @@ void game_loop()
         particle_render_erase_particles();
         particle_render_draw_particles();
 
+        *((volatile uint16_t *)0xffff8240) = 0x000;
+
         waiting_for_vbl = 1;
         while (waiting_for_vbl) {}
+
+        *((volatile uint16_t *)0xffff8240) = 0x400;
 
         particle_system_spawn(((logical_viewport_left_xpos + 160) << 16), 100 << 16);
         logical_viewport_left_xpos++;

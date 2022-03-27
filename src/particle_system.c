@@ -23,6 +23,8 @@ void particle_system_init()
     }
 
     particles[PARTICLE_COUNT - 1].next = NULL;
+
+    //srand(12345678);
 }
 
 void particle_system_update_system()
@@ -65,6 +67,13 @@ void particle_system_update_system()
     }
 }
 
+static int rand_state;
+static int random(void)
+{
+    rand_state = (rand_state * 1103515245 + 12345);
+    return rand_state;
+}
+
 void particle_system_spawn(int32_t precision_world_xpos, int32_t precision_world_ypos)
 {
     struct Particle *new_particle;
@@ -82,11 +91,13 @@ void particle_system_spawn(int32_t precision_world_xpos, int32_t precision_world
 
         new_particle->precision_world_xpos = precision_world_xpos;
         new_particle->precision_world_ypos = precision_world_ypos;
-        new_particle->precision_world_xadd = (rand() % 80000) - 40000;
-        new_particle->precision_world_yadd = -(rand() % 400000);
-        new_particle->time_to_live = rand() % 1023;
+        new_particle->precision_world_xadd = (random() % 120000);
+        new_particle->precision_world_yadd = -(random() % 120000);
+        new_particle->time_to_live = 4096;
     }
 }
+
+
 
 /*int main(int argc, char *argv[])
 {
