@@ -76,25 +76,12 @@ void particle_render_draw_particles()
 
 void particle_render_erase_particles()
 {
-    //uint8_t *hardware_playfield_buffer = hidden_hardware_playfield->buffer;
-    //uint32_t *current_particle_draw_offset = hidden_hardware_playfield->particle_draw_offsets;
-    //uint32_t hardware_playfield_particle_offset;
-
     particle_render_erase_particles_inner(
         hidden_hardware_playfield->particles_drawn,
         hidden_hardware_playfield->particle_draw_offsets,
         hardware_playfield_restore_buffer,
         hidden_hardware_playfield->buffer
     );
-
-    /*for (int index = hidden_hardware_playfield->particles_drawn; index > 0; index--) {
-        hardware_playfield_particle_offset = *current_particle_draw_offset++;
-
-        movep_restore_pixel(
-            &hardware_playfield_restore_buffer[hardware_playfield_particle_offset],
-            &hardware_playfield_buffer[hardware_playfield_particle_offset]
-        );
-    }*/
 }
 
 

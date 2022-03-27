@@ -11,14 +11,15 @@ _particle_render_erase_particles_inner:
     move.l 16(a0),a2 ; dest buffer
     move.l 8(a0),a0  ; particle draw offsets
 
+    sub.l a1,a2      ; difference between dest buffer and restore buffer
+
     bra.s .end_loop
 .loop:
     move.l (a0)+,d1  ; get offset and move to next offset address
     move.l a1,a3     ; a3 = restore buffer base address
     add.l d1,a3      ; add offset to base address
     movep.l 0(a3),d2 ; read source
-    move.l a2,a3     ; a3 = destination buffer base address
-    add.l d1,a3      ; add offset to base address
+    add.l a2,a3
     movep.l d2,0(a3) ; restore pixel
 
 .end_loop
