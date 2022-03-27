@@ -5,7 +5,7 @@ VASM_OPTS = -no-opt
 VLINK = vlink
 PHP = php
 
-OBJECT_FILES = src/shooter.o src/movep.o src/game_loop.o src/hardware_playfield.o src/generated/hardware_playfield_restore_buffer.o src/generated/hardware_playfield_ypos_lookup.o src/hardware_viewport.o src/logical_viewport.o src/particle_system.o src/particle_render.o src/vbl_handler.o src/generated/or_table.o src/generated/palette.o src/initialise.o
+OBJECT_FILES = src/shooter.o src/movep.o src/game_loop.o src/hardware_playfield.o src/generated/hardware_playfield_restore_buffer.o src/generated/hardware_playfield_ypos_lookup.o src/generated/hardware_viewport_xpos_lookup.o src/hardware_viewport.o src/logical_viewport.o src/particle_system.o src/particle_render.o src/vbl_handler.o src/generated/or_table.o src/generated/palette.o src/initialise.o
 
 bin/shooter.prg: $(OBJECT_FILES)
 	$(CC) -o src/shooter.elf libcxx/brownboot.o libcxx/browncrti.o libcxx/browncrtn.o libcxx/browncrt++.o libcxx/zerolibc.o libcxx/zerocrtfini.o $(OBJECT_FILES) -O3 -Wl,--emit-relocs -Wl,-e_start -Ttext=0 -nostartfiles -m68000 -Ofast -fomit-frame-pointer -D__ATARI__ -D__M68000__ -DELF_CONFIG_STACK=1024 -fstrict-aliasing -fcaller-saves -flto -ffunction-sections -fdata-sections -fleading-underscore
@@ -53,6 +53,12 @@ src/generated/hardware_playfield_ypos_lookup.c: src/generate_hardware_playfield_
 
 src/generated/hardware_playfield_ypos_lookup.o: src/generated/hardware_playfield_ypos_lookup.c src/hardware_playfield_ypos_lookup.h
 	$(CC) $(CFLAGS) -c src/generated/hardware_playfield_ypos_lookup.c -o src/generated/hardware_playfield_ypos_lookup.o
+
+src/generated/hardware_viewport_xpos_lookup.c: src/generate_hardware_viewport_xpos_lookup.php
+	$(PHP) src/generate_hardware_viewport_xpos_lookup.php src/generated/hardware_viewport_xpos_lookup.c
+
+src/generated/hardware_viewport_xpos_lookup.o: src/generated/hardware_viewport_xpos_lookup.c src/hardware_viewport_xpos_lookup.h
+	$(CC) $(CFLAGS) -c src/generated/hardware_viewport_xpos_lookup.c -o src/generated/hardware_viewport_xpos_lookup.o
 
 src/generated/or_table.c: src/generate_or_table.php
 	$(PHP) src/generate_or_table.php > src/generated/or_table.c
