@@ -15,7 +15,9 @@ void game_loop()
 
     while (1) {
         particle_system_update_system();
+        *((volatile uint16_t *)0xffff8240) = 0x040; // green
         particle_render_erase_particles();
+        *((volatile uint16_t *)0xffff8240) = 0x004; // blue
         particle_render_draw_particles();
 
         *((volatile uint16_t *)0xffff8240) = 0x000;
@@ -23,9 +25,11 @@ void game_loop()
         waiting_for_vbl = 1;
         while (waiting_for_vbl) {}
 
-        *((volatile uint16_t *)0xffff8240) = 0x400;
+        *((volatile uint16_t *)0xffff8240) = 0x400; // red
 
         particle_system_spawn(((logical_viewport_left_xpos + 160) << 16), 100 << 16);
+        particle_system_spawn(((logical_viewport_left_xpos + 160) << 16), 100 << 16);
+
         logical_viewport_left_xpos++;
     }
 }

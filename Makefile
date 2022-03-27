@@ -1,5 +1,5 @@
 CC = /home/jonathan/brown/bin/m68k-atarisuperbrowner-elf-gcc-11.2.0
-CFLAGS = -D__ATARI__ -D__M68000__ -DELF_CONFIG_STACK=1024 -flto -fleading-underscore -fomit-frame-pointer -O2 -m68000 -Wl,--traditional-format -Wall
+CFLAGS = -D__ATARI__ -D__M68000__ -DELF_CONFIG_STACK=1024 -fleading-underscore -fomit-frame-pointer -O3 -m68000 -Wl,--traditional-format -Wall
 VASM = vasmm68k_mot
 VASM_OPTS = -no-opt
 VLINK = vlink

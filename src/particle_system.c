@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <inttypes.h>
+#include "logical_viewport.h"
 #include "particle_system.h"
 #include "particle_common.h"
 #include "hardware_playfield.h"
+#include "viewport.h"
 #include "tigr.h"
 
 #define GRAVITY 800
@@ -23,8 +25,6 @@ void particle_system_init()
     }
 
     particles[PARTICLE_COUNT - 1].next = NULL;
-
-    //srand(12345678);
 }
 
 void particle_system_update_system()
@@ -33,6 +33,9 @@ void particle_system_update_system()
     struct Particle *current_particle = first_active_particle;
     struct Particle **last_unkilled_particle_next_ptr = &first_active_particle;
     uint16_t particle_killed;
+
+    int32_t precision_logical_viewport_left_xpos = logical_viewport_left_xpos << 16;
+    int32_t precision_logical_viewport_right_xpos = precision_logical_viewport_left_xpos + (VIEWPORT_WIDTH << 16);
 
     while (current_particle) {
         particle_killed = 0;
@@ -44,10 +47,15 @@ void particle_system_update_system()
             // update properties of particle
             current_particle->precision_world_yadd += GRAVITY;
             current_particle->precision_world_ypos += current_particle->precision_world_yadd;
-            if (current_particle->precision_world_ypos > (HARDWARE_PLAYFIELD_HEIGHT << 16) - 1) {
+            if (current_particle->precision_world_ypos > ((HARDWARE_PLAYFIELD_HEIGHT << 16) - 1)) {
                 particle_killed = 1;
             } else {
                 current_particle->precision_world_xpos += current_particle->precision_world_xadd;
+                if (current_particle->precision_world_xpos < precision_logical_viewport_left_xpos) {
+                    particle_killed = 1;
+                } else if (current_particle->precision_world_xpos > precision_logical_viewport_right_xpos) {
+                    particle_killed = 1;
+                }
             }
         }
 

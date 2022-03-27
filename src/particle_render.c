@@ -42,7 +42,7 @@ void particle_render_draw_particles()
     uint32_t *current_particle_draw_offset = hidden_hardware_playfield->particle_draw_offsets;
 
     // TODO: this needs to go in a common location
-    logical_viewport_right_xpos = logical_viewport_left_xpos + (VIEWPORT_WIDTH - 30);
+    logical_viewport_right_xpos = logical_viewport_left_xpos + VIEWPORT_WIDTH;
 
     uint16_t hardware_viewport_left_xpos = hardware_viewport_get_left_xpos();
 
@@ -59,10 +59,6 @@ void particle_render_draw_particles()
             // calculate the pixel xpos within the hardware viewport for this particle
             hardware_viewport_particle_xpos = hardware_viewport_left_xpos + 
                 (logical_viewport_particle_xpos - logical_viewport_left_xpos);
-
-            /*if ((hardware_viewport_particle_xpos < 0) || (hardware_viewport_particle_xpos > (HARDWARE_PLAYFIELD_WIDTH-1))) {
-                while (1==1) {}
-            }*/
 
             // calculate the address of the 16 pixel block within the hardware
             // playfield for this particle
@@ -90,9 +86,7 @@ void particle_render_draw_particles()
                 or_table[or_table_colour_offset]
             );
 
-            *current_particle_draw_offset = hardware_playfield_particle_offset;
-            current_particle_draw_offset++;
-
+            *current_particle_draw_offset++ = hardware_playfield_particle_offset;
             particles_drawn++;
         }
 
@@ -109,7 +103,7 @@ void particle_render_erase_particles()
     uint32_t hardware_playfield_particle_offset;
 
     for (int index = 0; index < hidden_hardware_playfield->particles_drawn; index++) {
-        hardware_playfield_particle_offset = *current_particle_draw_offset;
+        hardware_playfield_particle_offset = *current_particle_draw_offset++;
 
         // movep from parameter 1 into register
         // movep from register into parameter 2
@@ -117,8 +111,6 @@ void particle_render_erase_particles()
             &hardware_playfield_restore_buffer[hardware_playfield_particle_offset],
             &hardware_playfield_buffer[hardware_playfield_particle_offset]
         );
-
-        current_particle_draw_offset++;
     }
 }
 
