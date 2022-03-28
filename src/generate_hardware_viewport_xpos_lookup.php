@@ -10,7 +10,7 @@ $outputFilename = $argv[1];
 ob_start();
 echo("#include \"inttypes.h\"\n");
 echo("#include \"../hardware_viewport_xpos_lookup.h\"\n");
-echo("uint32_t hardware_viewport_xpos_lookup[] = {\n");
+echo("uint16_t hardware_viewport_xpos_lookup[] = {\n");
 for ($value = 0; $index < 960; $index++) {
     $value = $index >> 1 & 0xfffffff8;
     if ($index & 8) {

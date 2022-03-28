@@ -8,6 +8,7 @@
 #include "logical_viewport.h"
 #include "movep.h"
 #include "particle_render_erase_particles_inner.h"
+#include "particle_render_draw_particles_inner.h"
 #include "or_table.h"
 #include "particle_common.h"
 #include "particle_system.h"
@@ -34,6 +35,9 @@ void particle_render_draw_particles()
     uint16_t hardware_viewport_left_xpos = hardware_viewport_get_left_xpos();
 
     current_particle = first_active_particle;
+
+
+#ifdef FOO
     while (current_particle) {
         logical_viewport_particle_ypos = current_particle->precision_world_ypos >> 16;
 
@@ -68,8 +72,24 @@ void particle_render_draw_particles()
 
         current_particle = current_particle->next;
     }
-
     hidden_hardware_playfield->particles_drawn = particles_drawn;
+#endif
+
+    /*hidden_hardware_playfield->particles_drawn = particle_render_draw_particles_inner(
+        current_particle,
+        hardware_viewport_left_xpos,
+        current_particle_draw_pointer,
+        hardware_playfield_buffer
+    );*/
+
+    particle_render_draw_particles_inner(
+        current_particle,
+        hardware_viewport_left_xpos,
+        current_particle_draw_pointer,
+        hardware_playfield_buffer
+    );
+
+    hidden_hardware_playfield->particles_drawn = 0;
 }
 
 void particle_render_erase_particles()

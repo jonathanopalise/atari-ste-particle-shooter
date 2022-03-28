@@ -3,6 +3,6 @@
 
 #include <inttypes.h>
 
-extern uint32_t hardware_viewport_xpos_lookup[];
+extern uint16_t hardware_viewport_xpos_lookup[];
 
 #endif
