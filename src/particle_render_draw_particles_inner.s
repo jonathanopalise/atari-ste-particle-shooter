@@ -34,13 +34,12 @@ _particle_render_draw_particles_inner:
     lea _or_table_mask_lookup,a6
 
     moveq.l #0,d0    ; number of particles drawn
+    moveq.l #0,d6    ; clear top half to ensure correct functioning below
 
     cmp.l #0,a3
     beq.s .alldone
 
 .handle_particle:
-    ; do some stuff - a3 is pointer to current particle data
-
     ; logical_viewport_particle_ypos (d2) =
     ; current_particle->precision_world_xpos >> 16 (because of +2)
     move.w PRECISION_WORLD_YPOS_OFS(a3),d2
@@ -49,7 +48,7 @@ _particle_render_draw_particles_inner:
 
     ; logical_viewport_particle_xpos (d5) =
     ; current_particle->precision_world_xpos >> 16 (because of +2)
-    move.w PRECISION_WORLD_XPOS_OFS(a3),d5
+    move.w (a3),d5
 
     ; at this point:
     ; d3 = hardware_viewport_left_xpos
@@ -82,7 +81,6 @@ _particle_render_draw_particles_inner:
     ; hardware_viewport_mask_lookup!
     add.w d5,d5
     move.w (a5,d5.w),d6 ; get value in hardware_viewport_xpos_lookup
-    ext.l d6 ; might be able to remove this if we clear d6 at the top
     add.l d6,d2
 
     ; d2 now contains hardware_playfield_particle_offset
@@ -98,10 +96,6 @@ _particle_render_draw_particles_inner:
     ; derive or_table_mask_offsets
     move.w (a6,d5.w),d2 ; or_table_mask_lookup[hardware_viewport_particle_xpos]
 
-    ; might be able to remove these if we multiply the values in or_table_mask_lookup by 4
-    ;add.w d2,d2
-    ;add.w d2,d2
-
     move.w d2,d5
     add.w #60,d5 ; particle colour * 4
 
@@ -111,7 +105,6 @@ _particle_render_draw_particles_inner:
 
     ; this is the movep plot pixel code
     movep.l 0(a1),d1  ; get pixel
-    ; a6 needs to be the or lookup table!
     and.l (a3,d2.w),d1   ; apply AND
     or.l (a3,d5.w),d1   ; apply OR in WHITE
     movep.l d1,0(a1)  ; write back
