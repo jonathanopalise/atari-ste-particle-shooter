@@ -16,6 +16,7 @@ if (!file_exists($inputFilename)) {
 }
 
 $indexedBitmap = IndexedBitmap::loadGif($inputFilename);
+$indexedBitmap = $indexedBitmap->extractRegionToIndexedBitmap(0,0,960,200,0,0);
 $unmaskedSprite = SpriteConvertor::createUnmaskedSprite($indexedBitmap);
 $planarData = $unmaskedSprite->exportToPlanarData();
 $bytes = $planarData->getBytes();
