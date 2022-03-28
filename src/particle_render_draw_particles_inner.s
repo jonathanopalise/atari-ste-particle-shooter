@@ -88,8 +88,6 @@ _particle_render_draw_particles_inner:
     ; d2 now contains hardware_playfield_particle_offset
     ; WE CANNOT REUSE A3!
     ; calculate hardware_playfield_particle_ptr
-    ; THIS WON'T WORK BECAUSE d2 is a 16 bit offset!
-    ;lea (a0,d2),a1
 
     move.l a0,a1
     add.l d2,a1
@@ -98,12 +96,15 @@ _particle_render_draw_particles_inner:
     ; hardware_viewport_particle_xpos << 1 is preserved in d5
 
     ; derive or_table_mask_offsets
-    move.w (a6,d5.w),d2
+    move.w (a6,d5.w),d2 ; or_table_mask_lookup[hardware_viewport_particle_xpos]
     add.w d2,d2
     add.w d2,d2
-    move.w 15*4(a6,d5.w),d5
-    add.w d5,d5
-    add.w d5,d5
+
+    move.w d2,d5
+    add.w #60,d5
+    ;move.w 15*4(a6,d5.w),d5
+    ;add.w d5,d5
+    ;add.w d5,d5
 
     ; we need the or_table in an address register!
     move.l a3,usp
