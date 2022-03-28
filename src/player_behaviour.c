@@ -1,7 +1,13 @@
-
+#include "logical_viewport.h"
 #include "particle_system.h"
 #include "player_behaviour.h"
 #include "initialise.h"
+#include "random.h"
+#include "viewport.h"
+
+#define PLAYER_SPRITE_WIDTH 16
+#define PLAYER_SPRITE_HEIGHT 16
+#define BORDER_SIZE 16
 
 uint32_t player_logical_xpos;
 uint32_t player_logical_ypos;
@@ -23,15 +29,23 @@ void player_behaviour_update_position()
     player_logical_xpos += 1<<16;
 
     if (joy_up) {
-        player_logical_ypos -= 1<<16;
+        if (player_logical_ypos > (BORDER_SIZE<<16)) {
+            player_logical_ypos -= 1<<16;
+        }
     } else if (joy_down) {
-        player_logical_ypos += 1<<16;
+        if (player_logical_ypos < ((VIEWPORT_HEIGHT-(BORDER_SIZE+PLAYER_SPRITE_HEIGHT))<<16)) {
+            player_logical_ypos += 1<<16;
+        }
     }
 
     if (joy_left) {
-        player_logical_xpos -= 1<<16;
+        if (player_logical_xpos > ((logical_viewport_left_xpos+BORDER_SIZE)<<16)) {
+            player_logical_xpos -= 1<<16;
+        }
     } else if (joy_right) {
-        player_logical_xpos += 1<<16;
+        if (player_logical_xpos < ((logical_viewport_left_xpos+(VIEWPORT_WIDTH-(BORDER_SIZE+PLAYER_SPRITE_WIDTH)))<<16)) {
+            player_logical_xpos += 1<<16;
+        }
     }
 }
 
