@@ -5,10 +5,11 @@
 #include "particle_system.h"
 #include "particle_common.h"
 #include "hardware_playfield.h"
+#include "random.h"
 #include "viewport.h"
 #include "tigr.h"
 
-#define GRAVITY 800
+#define GRAVITY 400
 
 struct Particle particles[PARTICLE_COUNT];
 
@@ -75,15 +76,12 @@ void particle_system_update_system()
     }
 }
 
-static int rand_state;
-static int random(void)
-{
-    rand_state = (rand_state * 1103515245 + 12345);
-    return rand_state;
-}
-
-void particle_system_spawn(int32_t precision_world_xpos, int32_t precision_world_ypos)
-{
+void particle_system_spawn(
+    int32_t precision_world_xpos,
+    int32_t precision_world_ypos,
+    int32_t precision_world_xadd,
+    int32_t precision_world_yadd
+) {
     struct Particle *new_particle;
     struct Particle *tmp_particle;
 
@@ -99,9 +97,9 @@ void particle_system_spawn(int32_t precision_world_xpos, int32_t precision_world
 
         new_particle->precision_world_xpos = precision_world_xpos;
         new_particle->precision_world_ypos = precision_world_ypos;
-        new_particle->precision_world_xadd = (random() % 120000);
-        new_particle->precision_world_yadd = -(random() % 120000);
-        new_particle->time_to_live = 4096;
+        new_particle->precision_world_xadd = precision_world_xadd;
+        new_particle->precision_world_yadd = precision_world_yadd;
+        new_particle->time_to_live = 75;
     }
 }
 

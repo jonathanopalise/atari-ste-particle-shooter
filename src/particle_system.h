@@ -16,6 +16,11 @@ extern struct Particle *first_active_particle;
 
 void particle_system_init();
 void particle_system_update_system();
-void particle_system_spawn(int32_t precision_world_xpos, int32_t precision_world_ypos);
+void particle_system_spawn(
+    int32_t precision_world_xpos,
+    int32_t precision_world_ypos,
+    int32_t precision_world_xadd,
+    int32_t precision_world_yadd
+);
 
 #endif
