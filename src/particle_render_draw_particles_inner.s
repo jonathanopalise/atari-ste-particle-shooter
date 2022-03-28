@@ -82,7 +82,7 @@ _particle_render_draw_particles_inner:
     ; hardware_viewport_mask_lookup!
     add.w d5,d5
     move.w (a5,d5.w),d6 ; get value in hardware_viewport_xpos_lookup
-    ext.l d6
+    ext.l d6 ; might be able to remove this if we clear d6 at the top
     add.l d6,d2
 
     ; d2 now contains hardware_playfield_particle_offset
@@ -97,14 +97,13 @@ _particle_render_draw_particles_inner:
 
     ; derive or_table_mask_offsets
     move.w (a6,d5.w),d2 ; or_table_mask_lookup[hardware_viewport_particle_xpos]
-    add.w d2,d2
-    add.w d2,d2
+
+    ; might be able to remove these if we multiply the values in or_table_mask_lookup by 4
+    ;add.w d2,d2
+    ;add.w d2,d2
 
     move.w d2,d5
-    add.w #60,d5
-    ;move.w 15*4(a6,d5.w),d5
-    ;add.w d5,d5
-    ;add.w d5,d5
+    add.w #60,d5 ; particle colour * 4
 
     ; we need the or_table in an address register!
     move.l a3,usp

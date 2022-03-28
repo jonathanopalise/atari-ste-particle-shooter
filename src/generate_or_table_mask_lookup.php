@@ -12,7 +12,7 @@ echo("#include \"inttypes.h\"\n");
 echo("#include \"../or_table_mask_lookup.h\"\n");
 echo("uint16_t or_table_mask_lookup[] = {\n");
 for ($value = 0; $index < 960; $index++) {
-    $value = ($index & 7) << 4;
+    $value = (($index & 7) << 4) << 2;
     printf("    %d,\n",$value);
 }
 echo("};\n");
