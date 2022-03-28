@@ -82,14 +82,14 @@ void particle_render_draw_particles()
         hardware_playfield_buffer
     );*/
 
-    particle_render_draw_particles_inner(
+    hidden_hardware_playfield->particles_drawn = particle_render_draw_particles_inner(
         current_particle,
         hardware_viewport_left_xpos,
         current_particle_draw_pointer,
         hardware_playfield_buffer
     );
 
-    hidden_hardware_playfield->particles_drawn = 0;
+    //hidden_hardware_playfield->particles_drawn = 0;
 }
 
 void particle_render_erase_particles()
