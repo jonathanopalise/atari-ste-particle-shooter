@@ -7,7 +7,6 @@
 #include "hardware_playfield.h"
 #include "random.h"
 #include "viewport.h"
-#include "tigr.h"
 
 #define GRAVITY 400
 
@@ -103,39 +102,3 @@ void particle_system_spawn(
     }
 }
 
-
-
-/*int main(int argc, char *argv[])
-{
-    int frame_index;
-
-    struct Particle *current_particle;
-    Tigr *screen = tigrWindow(320, 200, "Hello", 0);
-    particle_system_init();
-    while (!tigrClosed(screen))
-    {
-        particle_system_spawn(160<<16, 100<<16);
-        tigrClear(screen, tigrRGB(0x10, 0x10, 0x10));
-        current_particle = first_active_particle;
-
-        while (current_particle) {
-            tigrPlot(
-                screen,
-                current_particle->precision_world_xpos >> 16,
-                current_particle->precision_world_ypos >> 16,
-                tigrRGB(
-                    0xff,
-                    0xff,
-                    0xff
-                )
-            );
-
-            current_particle = current_particle->next;
-        }
-        
-        particle_system_update_system();
-        tigrUpdate(screen);
-        frame_index++;
-    }
-    tigrFree(screen);
-}*/

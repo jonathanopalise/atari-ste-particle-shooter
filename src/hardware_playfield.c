@@ -19,8 +19,6 @@
 struct HardwarePlayfield *hidden_hardware_playfield;
 struct HardwarePlayfield *visible_hardware_playfield;
 
-//uint8_t hardware_playfield_restore_buffer[HARDWARE_PLAYFIELD_BUFFER_SIZE_BYTES];
-
 struct HardwarePlayfield hardware_playfield_1;
 struct HardwarePlayfield hardware_playfield_2;
 

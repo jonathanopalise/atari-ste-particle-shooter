@@ -4,19 +4,20 @@
 #include "logical_viewport.h"
 #include "particle_render.h"
 #include "particle_system.h"
-#include "player_behaviour.h"
+#include "sprite_system.h"
 #include "vbl_handler.h"
 
 void game_loop()
 {
-    player_behaviour_init_position();
     particle_system_init();
+    sprite_system_init();
+    sprite_system_spawn(160 << 16, 100 << 16, SPRITE_TYPE_PLAYER);
     hardware_playfield_init();
     initialise();
     logical_viewport_left_xpos = 0;
 
     while (1) {
-        player_behaviour_update_position();
+        sprite_system_update_system();
         particle_system_update_system();
         *((volatile uint16_t *)0xffff8240) = 0x040; // green
         particle_render_erase_particles();
@@ -29,11 +30,6 @@ void game_loop()
         while (waiting_for_vbl) {}
 
         *((volatile uint16_t *)0xffff8240) = 0x400; // red
-
-        /*if (logical_viewport_left_xpos & 1) {
-            particle_system_spawn(((logical_viewport_left_xpos + 160) << 16), 100 << 16);
-        }*/
-        player_behaviour_spawn_exhaust_particles();
 
         logical_viewport_left_xpos++;
     }
