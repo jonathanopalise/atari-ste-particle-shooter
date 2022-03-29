@@ -55,6 +55,6 @@ void player_behaviour_spawn_exhaust_particles()
         player_logical_xpos,
         player_logical_ypos,
         -(48000 + random() % 16000),
-        (random() % 12000) - 6000
+        (random() % 24000) - 12000
     );
 }

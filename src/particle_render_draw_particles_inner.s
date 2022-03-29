@@ -3,6 +3,7 @@
 ; these need to align with the Particle struct
 PRECISION_WORLD_XPOS_OFS equ 0
 PRECISION_WORLD_YPOS_OFS equ 4
+TIME_TO_LIVE_OFS equ 16
 NEXT_PARTICLE_OFS equ 18
 
 _particle_render_draw_particles_inner:
@@ -96,8 +97,17 @@ _particle_render_draw_particles_inner:
     ; derive or_table_mask_offsets
     move.w (a6,d5.w),d2 ; or_table_mask_lookup[hardware_viewport_particle_xpos]
 
-    move.w d2,d5
-    add.w #60,d5 ; particle colour * 4
+    move.w TIME_TO_LIVE_OFS(a3),d5 ; time to live: 0 - 63
+    lsr.w #4,d5 ; reduce to 0-3
+    add.w d5,d5 ; convert to offset into exhaust colours table
+    move.w .exhaust_trail_colours(pc,d5.w),d5
+    add.w d5,d5
+    add.w d5,d5
+    add.w d2,d5
+    ; we want time to live in a range of 0-3
+
+    ;move.w d2,d5
+    ;add.w #60,d5 ; particle colour * 4
 
     ; we need the or_table in an address register!
     move.l a3,usp
@@ -128,3 +138,6 @@ _particle_render_draw_particles_inner:
 
     ; particles drawn returned in d0
     rts
+
+.exhaust_trail_colours:
+    dc.w 4, 12, 14, 15

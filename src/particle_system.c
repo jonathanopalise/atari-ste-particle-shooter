@@ -99,7 +99,7 @@ void particle_system_spawn(
         new_particle->precision_world_ypos = precision_world_ypos;
         new_particle->precision_world_xadd = precision_world_xadd;
         new_particle->precision_world_yadd = precision_world_yadd;
-        new_particle->time_to_live = 75;
+        new_particle->time_to_live = 63;
     }
 }
 
