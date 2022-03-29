@@ -99,15 +99,10 @@ _particle_render_draw_particles_inner:
 
     move.w TIME_TO_LIVE_OFS(a3),d5 ; time to live: 0 - 63
     lsr.w #4,d5 ; reduce to 0-3
-    add.w d5,d5 ; convert to offset into exhaust colours table
-    move.w .exhaust_trail_colours(pc,d5.w),d5
+    move.b .exhaust_trail_colours(pc,d5.w),d5
     add.w d5,d5
     add.w d5,d5
     add.w d2,d5
-    ; we want time to live in a range of 0-3
-
-    ;move.w d2,d5
-    ;add.w #60,d5 ; particle colour * 4
 
     ; we need the or_table in an address register!
     move.l a3,usp
@@ -140,4 +135,4 @@ _particle_render_draw_particles_inner:
     rts
 
 .exhaust_trail_colours:
-    dc.w 4, 12, 14, 15
+    dc.b 4, 12, 14, 15
