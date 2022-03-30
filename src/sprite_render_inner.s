@@ -1,4 +1,5 @@
     public _sprite_render_inner_draw
+    public _sprite_render_inner_erase
 
 _sprite_render_inner_draw:
     ; a0 needs to be graphics source
@@ -102,6 +103,38 @@ rightendmasks:
     dc.w %1111111111111110
 
 _sprite_render_inner_erase:
+    ; struct SpriteDrawRecord {
+    ;     uint8_t *draw_pointer;
+    ;     uint16_t draw_width;
+    ; };
+
+    move.l a7,a0
+    movem.l d2-d7/a2-a6,-(sp)
+    ; don't forget push regs
+
+    move.w 4+2(a0),d0 ; sprites drawn
+    move.l 16(a0),a1  ; dest buffer
+    sub.l 12(a0),a1   ; difference between dest buffer and restore buffer
+    move.l 8(a0),a0   ; sprite draw records
+
+    bra .end_loop
+.loop:
+    move.l (a0)+,a2  ; get dest pointer
+    addq.l #2,a0     ; ignore draw width for now
+    move.l a2,a3     ; copy dest pointer to a3
+    sub.l  a1,a3     ; calc source pointer
+
+    rept 16
+    move.l (a3)+,(a2)+
+    move.l (a3)+,(a2)+
+    lea 480-8(a3),a3
+    lea 480-8(a2),a2
+    endr
+
+.end_loop
+    dbra d0,.loop   ; decrement sprites drawn
+    movem.l (sp)+,d2-d7/a2-a6
+
     rts
 
 
