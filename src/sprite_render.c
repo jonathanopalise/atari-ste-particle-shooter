@@ -43,11 +43,6 @@ void sprite_render_draw_sprites()
                 (logical_viewport_sprite_xpos - logical_viewport_left_xpos);
 
             sprite_render_skew = hardware_viewport_sprite_xpos & 15;
-            /*if (sprite_render_skew == 0) {
-                sprite_render_width = SPRITE_WIDTH_16_PIXELS;
-            } else {
-                sprite_render_width = SPRITE_WIDTH_32_PIXELS;
-            }*/
 
             // calculate the address of the 16 pixel block within the hardware
             // playfield for this sprite
@@ -58,7 +53,7 @@ void sprite_render_draw_sprites()
             hardware_playfield_sprite_ptr = &hardware_playfield_buffer[hardware_playfield_sprite_offset];
 
             sprite_render_inner_draw(
-                &sprite_data[0], // source
+                &sprite_data[current_sprite->image_index], // source
                 hardware_playfield_sprite_ptr, // destination
                 sprite_render_skew
             );

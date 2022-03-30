@@ -18,6 +18,7 @@ void game_loop()
     logical_viewport_left_xpos = 0;
 
     while (1) {
+        sprite_system_manage_waves();
         sprite_system_update_system();
         particle_system_update_system();
         *((volatile uint16_t *)0xffff8240) = 0x040; // green

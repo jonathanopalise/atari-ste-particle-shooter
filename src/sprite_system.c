@@ -5,6 +5,7 @@
 #include "sprite_behaviour.h"
 #include "sprite_system.h"
 #include "hardware_playfield.h"
+#include "random.h"
 #include "viewport.h"
 
 struct Sprite sprites[PARTICLE_COUNT];
@@ -31,11 +32,29 @@ void sprite_system_update_system()
     struct Sprite *tmp_sprite;
     struct SpriteBehaviour *sprite_behaviour;
 
+    // TODO: deduplicate: these also exist in particle system
+    int32_t precision_logical_viewport_left_xpos = logical_viewport_left_xpos << 16;
+    int32_t precision_logical_viewport_right_xpos = precision_logical_viewport_left_xpos + (VIEWPORT_WIDTH << 16);
+
     while (current_sprite) {
         sprite_behaviour = &sprite_behaviours[current_sprite->type];
         sprite_behaviour->update_attributes(current_sprite);
 
         if (current_sprite->active) {
+            if ((current_sprite->precision_world_ypos < (0 - (SPRITE_HEIGHT << 16))) || 
+                (current_sprite->precision_world_ypos > ((HARDWARE_PLAYFIELD_HEIGHT << 16) - 1)) ||
+                (current_sprite->precision_world_xpos < (precision_logical_viewport_left_xpos - (SPRITE_WIDTH << 16))) ||
+                (current_sprite->precision_world_xpos > precision_logical_viewport_right_xpos)) {
+                if (current_sprite->has_been_visible_since_spawn) {
+                    // if sprite is off screen, but has been on the screen, kill it
+                    current_sprite->active = 0;
+                }
+            } else {
+                current_sprite->has_been_visible_since_spawn = 1;
+            }
+        }
+
+        if (!current_sprite->active) {
             // remove dead sprite from the active list
             *last_unkilled_sprite_next_ptr = current_sprite->next;
 
@@ -51,13 +70,26 @@ void sprite_system_update_system()
     }
 }
 
+void sprite_system_manage_waves()
+{
+    int32_t precision_logical_viewport_left_xpos = logical_viewport_left_xpos << 16;
+
+    if ((logical_viewport_left_xpos % 64) == 0) {
+        sprite_system_spawn(
+            precision_logical_viewport_left_xpos + (VIEWPORT_WIDTH << 16),
+            random() % ((VIEWPORT_HEIGHT - 16) << 16),
+            SPRITE_TYPE_MINE
+        );
+    }
+}
+
 void sprite_system_spawn(int32_t precision_world_xpos, int32_t precision_world_ypos, uint16_t type)
 {
     struct Sprite *new_sprite;
     struct Sprite *tmp_sprite;
 
     if (first_free_sprite) {
-        // remove new particle from start of free list
+        // remove new sprite from start of free list
         new_sprite = first_free_sprite;
         first_free_sprite = new_sprite->next;
 
@@ -69,6 +101,10 @@ void sprite_system_spawn(int32_t precision_world_xpos, int32_t precision_world_y
         new_sprite->precision_world_xpos = precision_world_xpos;
         new_sprite->precision_world_ypos = precision_world_ypos;
         new_sprite->type = type;
+        new_sprite->active = 1;
+        new_sprite->has_been_visible_since_spawn = 0;
+
+        sprite_behaviours[type].init_attributes(new_sprite);
     }
 }
 

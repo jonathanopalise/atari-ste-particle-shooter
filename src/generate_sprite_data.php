@@ -9,8 +9,12 @@ if ($argc < 3) {
 
 $spriteDefinitions = [
     [
-        'x' => 200,
-        'y' => 0,
+        'x' => 0,
+        'y' => 200,
+    ],
+    [
+        'x' => 16,
+        'y' => 200,
     ]
 ];
 
@@ -22,13 +26,20 @@ if (!file_exists($inputFilename)) {
     exit(1);
 }
 
-$indexedBitmap = IndexedBitmap::loadGif($inputFilename);
+$spriteSheetBitmap = IndexedBitmap::loadGif($inputFilename);
 ob_start();
 echo("#include \"../sprite_data.h\"\n");
 echo("uint8_t sprite_data[][160] = {\n");
 
 foreach ($spriteDefinitions as $key => $spriteDefinition) {
-    $indexedBitmap = $indexedBitmap->extractRegionToIndexedBitmap(0,200,16,16,0,0);
+    $indexedBitmap = $spriteSheetBitmap->extractRegionToIndexedBitmap(
+        $spriteDefinition['x'],
+        $spriteDefinition['y'],
+        16,
+        16,
+        0,
+        0
+    );
     $unmaskedSprite = SpriteConvertor::createMaskedSprite($indexedBitmap);
     $planarData = $unmaskedSprite->exportToPlanarData();
     $bytes = $planarData->getBytes();

@@ -20,6 +20,7 @@ OBJECT_FILES =\
 	src/logical_viewport.o\
 	src/random.o\
 	src/player_sprite.o\
+	src/mine_sprite.o\
 	src/sprite_behaviour.o\
 	src/sprite_system.o\
 	src/sprite_render.o\
@@ -62,6 +63,9 @@ src/random.o: src/random.c src/random.h src/random.h src/random.h
 
 src/player_sprite.o: src/player_sprite.c src/player_sprite.h
 	$(CC) $(CFLAGS) -c src/player_sprite.c -o src/player_sprite.o
+
+src/mine_sprite.o: src/mine_sprite.c src/mine_sprite.h
+	$(CC) $(CFLAGS) -c src/mine_sprite.c -o src/mine_sprite.o
 
 src/sprite_behaviour.o: src/sprite_behaviour.c src/sprite_behaviour.h
 	$(CC) $(CFLAGS) -c src/sprite_behaviour.c -o src/sprite_behaviour.o

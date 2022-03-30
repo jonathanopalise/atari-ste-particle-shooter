@@ -176,7 +176,7 @@ class IndexedBitmap {
         }
 
         if ($x2 > $maxX) {
-            throw new RuntimeException('Specified extract is beyond right hand side of image');
+            throw new RuntimeException('Specified extract is beyond right hand side of image ('.$x2.' > '.$maxX.')');
         }
 
         if ($y2 > $maxY) {
