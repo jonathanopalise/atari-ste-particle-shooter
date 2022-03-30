@@ -17,7 +17,7 @@ _sprite_render_inner_draw:
 
     lea $ffff8a20.w,a3
     move.w #10,(a3)+                     ; source x increment 8a20
-    move.w #10,(a3)+                     ; source y increment 8a22
+    move.w #0,(a3)+                     ; source y increment 8a22
     addq.l #4,a3                         ; skip source address 8a24 - we'll set it later
     move.w #$ffff,(a3)+                  ; endmask1 8a28
     move.w #$ffff,(a3)+                  ; endmask2 8a2a

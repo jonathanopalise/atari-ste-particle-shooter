@@ -11,6 +11,7 @@ OBJECT_FILES =\
 	src/particle_render_draw_particles_inner.o\
 	src/game_loop.o\
 	src/hardware_playfield.o\
+	src/generated/sprite_data.o\
 	src/generated/hardware_playfield_restore_buffer.o\
 	src/generated/hardware_playfield_ypos_lookup.o\
 	src/generated/hardware_viewport_xpos_lookup.o\
@@ -85,6 +86,9 @@ src/vbl_handler.o: src/vbl_handler.c src/vbl_handler.h src/hardware_playfield.h 
 
 src/generated/or_table.o: src/generated/or_table.c src/or_table.h
 	$(CC) $(CFLAGS) -c src/generated/or_table.c -o src/generated/or_table.o
+
+src/generated/sprite_data.c: assets/clouds.gif src/generate_sprite_data.php
+	$(PHP) src/generate_sprite_data.php assets/clouds.gif src/generated/sprite_data.c
 
 src/generated/hardware_playfield_restore_buffer.c: assets/clouds.gif src/generate_hardware_playfield_restore_buffer.php
 	$(PHP) src/generate_hardware_playfield_restore_buffer.php assets/clouds.gif src/generated/hardware_playfield_restore_buffer.c

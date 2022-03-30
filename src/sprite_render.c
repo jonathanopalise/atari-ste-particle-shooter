@@ -6,6 +6,7 @@
 #include "sprite_common.h"
 #include "sprite_render_inner.h"
 #include "sprite_system.h"
+#include "sprite_data.h"
 #include "viewport.h"
 
 #define SPRITE_WIDTH_16_PIXELS 0
@@ -57,7 +58,7 @@ void sprite_render_draw_sprites()
             hardware_playfield_sprite_ptr = &hardware_playfield_buffer[hardware_playfield_sprite_offset];
 
             sprite_render_inner_draw(
-                (uint8_t *)0, // source
+                &sprite_data[0], // source
                 hardware_playfield_sprite_ptr, // destination
                 sprite_render_skew
             );
