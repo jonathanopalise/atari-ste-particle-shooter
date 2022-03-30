@@ -21,6 +21,8 @@ OBJECT_FILES =\
 	src/player_sprite.o\
 	src/sprite_behaviour.o\
 	src/sprite_system.o\
+	src/sprite_render.o\
+	src/sprite_render_inner.o\
 	src/particle_system.o\
 	src/particle_render.o\
 	src/vbl_handler.o\
@@ -65,6 +67,12 @@ src/sprite_behaviour.o: src/sprite_behaviour.c src/sprite_behaviour.h
 
 src/sprite_system.o: src/sprite_system.c src/sprite_system.h
 	$(CC) $(CFLAGS) -c src/sprite_system.c -o src/sprite_system.o
+
+src/sprite_render.o: src/sprite_render.c src/sprite_render.h
+	$(CC) $(CFLAGS) -c src/sprite_render.c -o src/sprite_render.o
+
+src/sprite_render_inner.o: src/sprite_render_inner.s
+	$(VASM) $(VASM_OPTS) src/sprite_render_inner.s -Felf -o src/sprite_render_inner.o
 
 src/particle_system.o: src/particle_system.c src/particle_system.h src/particle_common.h src/hardware_playfield.h
 	$(CC) $(CFLAGS) -c src/particle_system.c -o src/particle_system.o

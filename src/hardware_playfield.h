@@ -19,7 +19,7 @@ struct HardwarePlayfield {
    uint8_t buffer[HARDWARE_PLAYFIELD_BUFFER_SIZE_BYTES];
    uint8_t *particle_draw_pointers[PARTICLE_COUNT];
    uint16_t particles_drawn;
-   struct SpriteDrawRecord *sprite_draw_records[SPRITE_COUNT];
+   struct SpriteDrawRecord sprite_draw_records[SPRITE_COUNT];
    uint16_t sprites_drawn;
 };
 

@@ -9,8 +9,6 @@
 #include "particle_system.h"
 #include "viewport.h"
 
-#define VIEWPORT_BYTES_PER_LINE (PIXELS_TO_BYTES(VIEWPORT_WIDTH))
-
 void particle_render_draw_particles()
 {
     struct Particle *current_particle = first_active_particle;

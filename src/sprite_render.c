@@ -3,20 +3,27 @@
 #include "hardware_playfield_restore_buffer.h"
 #include "hardware_viewport.h"
 #include "logical_viewport.h"
-#include "particle_render_erase_particles_inner.h"
-#include "particle_render_draw_particles_inner.h"
-#include "particle_common.h"
-#include "particle_system.h"
+#include "sprite_common.h"
+#include "sprite_render_inner.h"
+#include "sprite_system.h"
 #include "viewport.h"
-
-#define VIEWPORT_BYTES_PER_LINE (PIXELS_TO_BYTES(VIEWPORT_WIDTH))
 
 void sprite_render_draw_sprites()
 {
     struct Sprite *current_sprite = first_active_sprite;
     uint8_t *hardware_playfield_buffer = hidden_hardware_playfield->buffer;
-    uint8_t **current_sprite_draw_pointer = hidden_hardware_playfield->particle_draw_pointers;
+    struct SpriteDrawRecord *current_sprite_draw_record = hidden_hardware_playfield->sprite_draw_records;
     uint16_t hardware_viewport_left_xpos = hardware_viewport_get_left_xpos();
+
+    int16_t logical_viewport_sprite_xpos;
+    int16_t logical_viewport_sprite_ypos;
+    int16_t hardware_viewport_sprite_xpos;
+    int16_t logical_viewport_right_xpos = logical_viewport_left_xpos + VIEWPORT_WIDTH;
+    uint32_t hardware_playfield_sprite_offset;
+    uint8_t *hardware_playfield_sprite_ptr;
+    uint16_t sprites_drawn = 0;
+    uint16_t sprite_render_skew;
+    uint16_t sprite_render_width;
 
     while (current_sprite) {
         logical_viewport_sprite_xpos = current_sprite->precision_world_xpos >> 16;
@@ -29,16 +36,33 @@ void sprite_render_draw_sprites()
         ) {
             // calculate the pixel xpos within the hardware viewport for this sprite
             hardware_viewport_sprite_xpos = hardware_viewport_left_xpos + 
-                (logical_viewport_particle_xpos - logical_viewport_left_xpos);
+                (logical_viewport_sprite_xpos - logical_viewport_left_xpos);
+
+            sprite_render_skew = hardware_viewport_sprite_xpos & 15;
+            if (sprite_render_skew == 0) {
+                sprite_render_width = 16;
+            } else {
+                sprite_render_width = 32;
+            }
 
             // calculate the address of the 16 pixel block within the hardware
             // playfield for this sprite
-            hardware_playfield_particle_offset =
-                (VIEWPORT_BYTES_PER_LINE * logical_viewport_particle_ypos) +
-                ((hardware_viewport_particle_xpos >> 4) << 3);
+            hardware_playfield_sprite_offset =
+                (480 * logical_viewport_sprite_ypos) +
+                ((hardware_viewport_sprite_xpos >> 4) << 3);
 
-            *current_sprite_draw_offset = hardware_playfield_particle_offset;
-            current_sprite_draw_offset++;
+            hardware_playfield_sprite_ptr = &hardware_playfield_buffer[hardware_playfield_sprite_offset];
+
+            sprite_render_inner_draw(
+                (uint8_t *)0, // source
+                hardware_playfield_sprite_ptr, // destination
+                sprite_render_skew,
+                sprite_render_width
+            );
+
+            current_sprite_draw_record->draw_pointer = hardware_playfield_sprite_ptr;
+            current_sprite_draw_record->draw_width = sprite_render_width;
+            current_sprite_draw_record++;
             sprites_drawn++;
         }
 
@@ -50,11 +74,27 @@ void sprite_render_draw_sprites()
 
 void sprite_render_erase_sprites()
 {
-    particle_render_erase_particles_inner(
-        hidden_hardware_playfield->particles_drawn,
-        hidden_hardware_playfield->particle_draw_pointers,
-        hardware_playfield_restore_buffer,
-        hidden_hardware_playfield->buffer
-    );
+    uint32_t buffer_difference = hidden_hardware_playfield->buffer - hardware_playfield_restore_buffer;
+    struct SpriteDrawRecord *current_sprite_draw_record = hidden_hardware_playfield->sprite_draw_records;
+    uint16_t x;
+    uint16_t y;
+
+    for (int index = hidden_hardware_playfield->sprites_drawn; index > 0; index--) {
+        uint8_t dest_pointer = *current_sprite_draw_record->draw_pointer;
+        uint8_t source_pointer = dest_pointer + buffer_difference;
+
+        /*for (y = 0; y < 15; y++) {
+            for (x = 0; x < 2; x++) {
+                *((uint32_t *)dest_pointer) = *((uint32_t *)source_pointer);
+                source_pointer += 4;
+                dest_pointer += 4;
+                *((uint32_t *)dest_pointer) = *((uint32_t *)source_pointer);
+            }
+            source_pointer += (480-8);
+            dest_pointer += (480-8);
+        }*/
+
+        current_sprite_draw_record++;
+    }
 }
 
