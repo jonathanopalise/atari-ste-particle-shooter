@@ -8,6 +8,9 @@
 #include "sprite_system.h"
 #include "viewport.h"
 
+#define SPRITE_WIDTH_16_PIXELS 0
+#define SPRITE_WIDTH_32_PIXELS 1
+
 void sprite_render_draw_sprites()
 {
     struct Sprite *current_sprite = first_active_sprite;
@@ -39,11 +42,11 @@ void sprite_render_draw_sprites()
                 (logical_viewport_sprite_xpos - logical_viewport_left_xpos);
 
             sprite_render_skew = hardware_viewport_sprite_xpos & 15;
-            if (sprite_render_skew == 0) {
-                sprite_render_width = 16;
+            /*if (sprite_render_skew == 0) {
+                sprite_render_width = SPRITE_WIDTH_16_PIXELS;
             } else {
-                sprite_render_width = 32;
-            }
+                sprite_render_width = SPRITE_WIDTH_32_PIXELS;
+            }*/
 
             // calculate the address of the 16 pixel block within the hardware
             // playfield for this sprite
@@ -56,12 +59,11 @@ void sprite_render_draw_sprites()
             sprite_render_inner_draw(
                 (uint8_t *)0, // source
                 hardware_playfield_sprite_ptr, // destination
-                sprite_render_skew,
-                sprite_render_width
+                sprite_render_skew
             );
 
             current_sprite_draw_record->draw_pointer = hardware_playfield_sprite_ptr;
-            current_sprite_draw_record->draw_width = sprite_render_width;
+            current_sprite_draw_record->draw_width = (sprite_render_skew != 0);
             current_sprite_draw_record++;
             sprites_drawn++;
         }

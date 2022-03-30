@@ -14,7 +14,6 @@ _sprite_render_inner_draw:
     ; a0(4) = source
     ; a0(8) = destination
     ; a0(12+2) = skew (ignore for now, assume 0)
-    ; a0(16+2) = width (ignore for now, assume 16)
 
     lea $ffff8a20.w,a3
     move.w #10,(a3)+                     ; source x increment 8a20
@@ -23,14 +22,35 @@ _sprite_render_inner_draw:
     move.w #$ffff,(a3)+                  ; endmask1 8a28
     move.w #$ffff,(a3)+                  ; endmask2 8a2a
     move.w #$ffff,(a3)+                  ; endmask3 8a2c
-    move.w #8,(a3)+                      ; dest x increment 8a2e
-    move.w #480,(a3)+                    ; dest y increment 8a30
+    move.w #8,(a3)+                      ; dest x increment 8a2e 
+    ;move.w #480,(a3)+                    ; dest y increment 8a30
 
-    move.w #1,$ffff8a36.w                ; xcount 8a36
     move.w #$201,$ffff8a3a.w             ; hop/op: read from source, source & destination
 
+    move.w 12+2(a0),d2                   ; skew = 0
     move.l 8(a0),a1                      ; dest address 8a32
     move.l 4(a0),a0                      ; source address 8a24
+
+    tst.w d2
+    beq.s .lines_of_16_pixels
+
+.lines_of_32_pixels:
+
+    ; 32 pixels size handling
+    move.w #480-8,$ffff8a30.w             ; dest y increment 8a30
+    move.w #2,$ffff8a36.w                ; xcount 8a36
+    move.b d2,$ffff8a3d.w
+    add.w d2,d2
+    move.w leftendmasks(pc,d2),$ffff8a28.w
+    move.w rightendmasks(pc,d2),$ffff8a2c.w
+    bra.s .after_size
+
+.lines_of_16_pixels
+    ; 16 pixel size handling
+    move.w #480,$ffff8a30.w             ; dest y increment 8a30
+    move.w #1,$ffff8a36.w                ; xcount 8a36
+
+.after_size
 
     rept 3
     bsr.s drawplane
@@ -120,10 +140,23 @@ _sprite_render_inner_erase:
     bra .end_loop
 .loop:
     move.l (a0)+,a2  ; get dest pointer
-    addq.l #2,a0     ; ignore draw width for now
     move.l a2,a3     ; copy dest pointer to a3
     sub.l  a1,a3     ; calc source pointer
+    cmp.w #0,(a0)+   ; ignore draw width for now
+    beq .clear_16_pixels
 
+.clear_32_pixels
+    rept 16
+    move.l (a3)+,(a2)+
+    move.l (a3)+,(a2)+
+    move.l (a3)+,(a2)+
+    move.l (a3)+,(a2)+
+    lea 480-16(a3),a3
+    lea 480-16(a2),a2
+    endr
+    bra .end_loop
+
+.clear_16_pixels
     rept 16
     move.l (a3)+,(a2)+
     move.l (a3)+,(a2)+

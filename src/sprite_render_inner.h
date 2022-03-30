@@ -7,8 +7,7 @@
 void sprite_render_inner_draw(
     uint8_t *source,
     uint8_t *destination,
-    uint16_t skew,
-    uint16_t width
+    uint16_t skew
 );
 
 void sprite_render_inner_erase(
