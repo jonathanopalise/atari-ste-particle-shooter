@@ -16,8 +16,8 @@ _sprite_render_inner_draw:
     ; a0(12+2) = skew (ignore for now, assume 0)
 
     lea $ffff8a20.w,a3
-    move.w #10,(a3)+                     ; source x increment 8a20
-    move.w #0,(a3)+                     ; source y increment 8a22
+    move.w #0,(a3)+                     ; source x increment 8a20
+    move.w #10,(a3)+                      ; source y increment 8a22
     addq.l #4,a3                         ; skip source address 8a24 - we'll set it later
     move.w #$ffff,(a3)+                  ; endmask1 8a28
     move.w #$ffff,(a3)+                  ; endmask2 8a2a
@@ -31,6 +31,7 @@ _sprite_render_inner_draw:
     move.l 8(a0),a1                      ; dest address 8a32
     move.l 4(a0),a0                      ; source address 8a24
 
+    move.b d2,$ffff8a3d.w
     tst.w d2
     beq.s .lines_of_16_pixels
 
@@ -39,7 +40,6 @@ _sprite_render_inner_draw:
     ; 32 pixels size handling
     move.w #480-8,$ffff8a30.w             ; dest y increment 8a30
     move.w #2,$ffff8a36.w                ; xcount 8a36
-    move.b d2,$ffff8a3d.w
     add.w d2,d2
     move.w leftendmasks(pc,d2),$ffff8a28.w
     move.w rightendmasks(pc,d2),$ffff8a2c.w
