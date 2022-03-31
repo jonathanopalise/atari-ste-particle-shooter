@@ -29,37 +29,43 @@ void particle_system_init()
 
 void particle_system_update_system()
 {
-    struct Particle *tmp_particle;
     struct Particle *current_particle = first_active_particle;
-    struct Particle **last_unkilled_particle_next_ptr = &first_active_particle;
-    uint16_t particle_killed;
 
     int32_t precision_logical_viewport_left_xpos = logical_viewport_left_xpos << 16;
     int32_t precision_logical_viewport_right_xpos = precision_logical_viewport_left_xpos + (VIEWPORT_WIDTH << 16);
 
     while (current_particle) {
-        particle_killed = 0;
-
         current_particle->time_to_live--;
         if (current_particle->time_to_live == 0) {
-            particle_killed = 1;
+            current_particle->active = 0;
         } else {
             // update properties of particle
             current_particle->precision_world_yadd += GRAVITY;
             current_particle->precision_world_ypos += current_particle->precision_world_yadd;
             if (current_particle->precision_world_ypos > ((HARDWARE_PLAYFIELD_HEIGHT << 16) - 1)) {
-                particle_killed = 1;
+                current_particle->active = 0;
             } else {
                 current_particle->precision_world_xpos += current_particle->precision_world_xadd;
                 if (current_particle->precision_world_xpos < precision_logical_viewport_left_xpos) {
-                    particle_killed = 1;
+                    current_particle->active = 0;
                 } else if (current_particle->precision_world_xpos > precision_logical_viewport_right_xpos) {
-                    particle_killed = 1;
+                    current_particle->active = 0;
                 }
             }
         }
 
-        if (particle_killed) {
+        current_particle = current_particle->next;
+    }
+}
+
+void particle_system_update_free_list()
+{
+    struct Particle *current_particle = first_active_particle;
+    struct Particle *tmp_particle;
+    struct Particle **last_unkilled_particle_next_ptr = &first_active_particle;
+
+    while (current_particle) {
+        if (!current_particle->active) {
             // remove dead particle from the active list
             *last_unkilled_particle_next_ptr = current_particle->next;
 
@@ -100,6 +106,7 @@ void particle_system_spawn(
         new_particle->precision_world_xadd = precision_world_xadd;
         new_particle->precision_world_yadd = precision_world_yadd;
         new_particle->time_to_live = 63;
+        new_particle->active = 1;
         new_particle->type = type;
     }
 }

@@ -14,13 +14,15 @@ struct Particle {
 	int32_t precision_world_yadd; // offset 12
     uint16_t type; // offset 16
     uint16_t time_to_live; // offset 18
-    struct Particle *next; // offset 20
+    uint16_t active; // offset 20
+    struct Particle *next; // offset 22
 };
 
 extern struct Particle *first_active_particle;
 
 void particle_system_init();
 void particle_system_update_system();
+void particle_system_update_free_list();
 void particle_system_spawn(
     int32_t precision_world_xpos,
     int32_t precision_world_ypos,

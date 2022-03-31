@@ -21,6 +21,7 @@ void game_loop()
         sprite_system_manage_waves();
         sprite_system_update_system();
         particle_system_update_system();
+        particle_system_update_free_list();
         *((volatile uint16_t *)0xffff8240) = 0x040; // green
         particle_render_erase_particles();
         sprite_render_erase_sprites();
