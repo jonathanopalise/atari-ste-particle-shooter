@@ -3,8 +3,9 @@
 ; these need to align with the Particle struct
 PRECISION_WORLD_XPOS_OFS equ 0
 PRECISION_WORLD_YPOS_OFS equ 4
-TIME_TO_LIVE_OFS equ 16
-NEXT_PARTICLE_OFS equ 18
+TYPE_OFS equ 16
+TIME_TO_LIVE_OFS equ 18
+NEXT_PARTICLE_OFS equ 20
 
 _particle_render_draw_particles_inner:
     move.l a7,a0

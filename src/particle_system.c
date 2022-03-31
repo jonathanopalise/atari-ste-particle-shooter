@@ -79,7 +79,8 @@ void particle_system_spawn(
     int32_t precision_world_xpos,
     int32_t precision_world_ypos,
     int32_t precision_world_xadd,
-    int32_t precision_world_yadd
+    int32_t precision_world_yadd,
+    uint16_t type
 ) {
     struct Particle *new_particle;
     struct Particle *tmp_particle;
@@ -99,6 +100,7 @@ void particle_system_spawn(
         new_particle->precision_world_xadd = precision_world_xadd;
         new_particle->precision_world_yadd = precision_world_yadd;
         new_particle->time_to_live = 63;
+        new_particle->type = type;
     }
 }
 
