@@ -42,23 +42,8 @@ void mine_sprite_update_attributes(struct Sprite *sprite)
 void mine_sprite_handle_player_bullet(struct Sprite *sprite)
 {
     struct ExplosionSpawnParams *current_explosion_spawn_params;
-    uint16_t particle_xpos;
-    uint16_t particle_ypos;
-    uint16_t x_index;
-    uint16_t y_index;
 
-    particle_ypos = sprite->precision_world_ypos;
-    for (y_index = 0; y_index < 5; y_index++) {
-        particle_xpos = sprite->precision_world_xpos;
-        for (x_index = 0; x_index < 5; x_index++) {
-            /*particle_system_spawn(
-                particle_xpos,
-                particle_ypos,
-                (random() % 48000) - 24000,
-                -(random() % 24000),
-                PARTICLE_TYPE_PLAYER_EXHAUST
-            );*/
-
+    for (uint16_t index = 0; index < 16; index++) {
         current_explosion_spawn_params = &explosion_spawn_params[current_explosion_spawn_params_offset];
 
         particle_system_spawn(
@@ -71,15 +56,8 @@ void mine_sprite_handle_player_bullet(struct Sprite *sprite)
 
         current_explosion_spawn_params_offset++;
         current_explosion_spawn_params_offset &= (EXPLOSION_SPAWN_PARAMS_COUNT - 1);
-
-            particle_xpos += (4 << 16);
-        }
-        particle_ypos += (4 << 16);
     }
 
     sprite->type = SPRITE_TYPE_EXPLOSION;
     explosion_sprite_init_attributes(sprite);
-
-    //sprite->active = 0;
-    // need to convert to explosion
 }

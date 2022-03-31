@@ -64,7 +64,9 @@ void player_sprite_update_attributes(struct Sprite *sprite)
         sprite_attributes->frames_until_next_bullet = 10;
     }
 
-    player_sprite_spawn_exhaust_particles(sprite);
+    if (logical_viewport_left_xpos & 1) {
+        player_sprite_spawn_exhaust_particles(sprite);
+    }
 }
 
 void player_sprite_handle_enemy_bullet(struct Sprite *sprite)
