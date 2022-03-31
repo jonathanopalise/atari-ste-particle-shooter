@@ -14,10 +14,6 @@ struct Sprite sprites[SPRITE_COUNT];
 struct Sprite *first_active_sprite;
 struct Sprite *first_free_sprite;
 
-struct Sprite *player_bullet_collidable_sprites[SPRITE_COUNT];
-struct Sprite *current_player_bullet_collidable_sprites[SPRITE_COUNT];
-uint16_t player_bullet_collidable_sprites_count;
-
 void sprite_system_init()
 {
     first_active_sprite = NULL;

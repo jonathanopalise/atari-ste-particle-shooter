@@ -27,13 +27,14 @@ OBJECT_FILES =\
 	src/sprite_render_inner.o\
 	src/particle_system.o\
 	src/particle_render.o\
+	src/collision_detection.o\
 	src/vbl_handler.o\
 	src/generated/or_table.o\
 	src/generated/palette.o\
 	src/initialise.o
 
 bin/shooter.prg: $(OBJECT_FILES)
-	$(CC) -o src/shooter.elf libcxx/brownboot.o libcxx/browncrti.o libcxx/browncrtn.o libcxx/browncrt++.o libcxx/zerolibc.o libcxx/zerocrtfini.o $(OBJECT_FILES) -O3 -Wl,--emit-relocs -Wl,-e_start -Ttext=0 -nostartfiles -m68000 -Ofast -fomit-frame-pointer -D__ATARI__ -D__M68000__ -DELF_CONFIG_STACK=1024 -fstrict-aliasing -fcaller-saves -flto -ffunction-sections -fdata-sections -fleading-underscore
+	$(CC) -o src/shooter.elf libcxx/brownboot.o libcxx/browncrti.o libcxx/browncrtn.o libcxx/browncrt++.o libcxx/zerolibc.o libcxx/zerocrtfini.o $(OBJECT_FILES) -O3 -Wl,--emit-relocs -Wl,-e_start -Ttext=0 -nostartfiles -m68000 -Ofast -fomit-frame-pointer -D__ATARI__ -D__M68000__ -DELF_CONFIG_STACK=1024 -fstrict-aliasing -fcaller-saves -ffunction-sections -fdata-sections -fleading-underscore
 	./brown.out -i src/shooter.elf -o bin/shooter.prg
 	chmod +x bin/shooter.prg
 
@@ -84,6 +85,9 @@ src/particle_system.o: src/particle_system.c src/particle_system.h src/particle_
 
 src/particle_render.o: src/particle_render.c src/hardware.h src/hardware_playfield.h src/hardware_viewport.h src/logical_viewport.h src/or_table.h src/particle_common.h src/particle_system.h src/viewport.h src/particle_render_erase_particles_inner.h src/particle_render_draw_particles_inner.h
 	$(CC) $(CFLAGS) -c src/particle_render.c -o src/particle_render.o
+
+src/collision_detection.o: src/collision_detection.c src/collision_detection.h
+	$(CC) $(CFLAGS) -c src/collision_detection.c -o src/collision_detection.o
 
 src/vbl_handler.o: src/vbl_handler.c src/vbl_handler.h src/hardware_playfield.h src/hardware_viewport.h
 	$(CC) $(CFLAGS) -c src/vbl_handler.c -o src/vbl_handler.o

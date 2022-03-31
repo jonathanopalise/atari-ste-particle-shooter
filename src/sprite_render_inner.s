@@ -137,6 +137,9 @@ _sprite_render_inner_erase:
     sub.l 12(a0),a1   ; difference between dest buffer and restore buffer
     move.l 8(a0),a0   ; sprite draw records
 
+;.test
+;    bra.s .test
+
     bra .end_loop
 .loop:
     move.l (a0)+,a2  ; get dest pointer

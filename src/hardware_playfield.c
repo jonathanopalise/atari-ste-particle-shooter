@@ -45,6 +45,7 @@ static void hardware_playfield_init_playfield(struct HardwarePlayfield *hardware
     );
 
     hardware_playfield->particles_drawn = 0;
+    hardware_playfield->sprites_drawn = 0;
 }
 
 void hardware_playfield_init()

@@ -27,7 +27,6 @@ void sprite_render_draw_sprites()
     uint8_t *hardware_playfield_sprite_ptr;
     uint16_t sprites_drawn = 0;
     uint16_t sprite_render_skew;
-    uint16_t sprite_render_width;
 
     while (current_sprite) {
         logical_viewport_sprite_xpos = current_sprite->precision_world_xpos >> 16;
@@ -53,7 +52,7 @@ void sprite_render_draw_sprites()
             hardware_playfield_sprite_ptr = &hardware_playfield_buffer[hardware_playfield_sprite_offset];
 
             sprite_render_inner_draw(
-                &sprite_data[current_sprite->image_index], // source
+                sprite_data[current_sprite->image_index], // source
                 hardware_playfield_sprite_ptr, // destination
                 sprite_render_skew
             );
@@ -78,7 +77,6 @@ void sprite_render_erase_sprites()
         hardware_playfield_restore_buffer,
         hidden_hardware_playfield->buffer
     );
-
 
     /*uint32_t buffer_difference = hidden_hardware_playfield->buffer - hardware_playfield_restore_buffer;
     struct SpriteDrawRecord *current_sprite_draw_record = hidden_hardware_playfield->sprite_draw_records;

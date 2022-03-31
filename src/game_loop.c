@@ -6,23 +6,31 @@
 #include "particle_system.h"
 #include "sprite_render.h"
 #include "sprite_system.h"
+#include "collision_detection.h"
 #include "vbl_handler.h"
 
 void game_loop()
 {
     particle_system_init();
     sprite_system_init();
-    sprite_system_spawn(160 << 16, 100 << 16, SPRITE_TYPE_PLAYER);
     hardware_playfield_init();
     initialise();
     logical_viewport_left_xpos = 0;
 
+
     while (1) {
+
+        // this shouldn't be here but it doesn't like being above
+        if (logical_viewport_left_xpos == 1) {
+            sprite_system_spawn(160 << 16, 100 << 16, SPRITE_TYPE_PLAYER);
+        }
+
         sprite_system_manage_waves();
         sprite_system_update_system();
-        sprite_system_update_free_list();
         particle_system_update_system();
+        sprite_system_update_free_list();
         particle_system_update_free_list();
+        collision_detection_handle_player_bullet_collisions();
         *((volatile uint16_t *)0xffff8240) = 0x040; // green
         particle_render_erase_particles();
         sprite_render_erase_sprites();
