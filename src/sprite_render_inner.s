@@ -148,23 +148,53 @@ _sprite_render_inner_erase:
     beq .clear_16_pixels
 
 .clear_32_pixels
-    rept 16
-    move.l (a3)+,(a2)+
-    move.l (a3)+,(a2)+
-    move.l (a3)+,(a2)+
-    move.l (a3)+,(a2)+
-    lea 480-16(a3),a3
-    lea 480-16(a2),a2
-    endr
+    lea $ffff8a20.w,a4
+    move.w #2,(a4)+      ; srcxinc 8a20
+    move.w #480-14,(a4)+  ; srcyinc 8a22
+    move.l a3,(a4)+      ; src address 8a24
+    move.w #$ffff,(a4)+   ; endmask1 8a28
+    move.w #$ffff,(a4)+   ; endmask2 8a2a
+    move.w #$ffff,(a4)+   ; endmask3 8a2c
+    move.w #2,(a4)+      ; dstxinc 8a2e
+    move.w #480-14,(a4)+  ; dstyinc 8a30
+    move.l a2,(a4)+      ; dst address 8a32
+    move.w #8,(a4)+      ; xcount 8a36
+    move.w #16,(a4)+     ; ycount 8a38
+    move.w #$0203,(a4)+  ; hop/op 8a3a
+    move.w #$c000,(a4)+   ; blitter control 8a3c
+
+    ;rept 16
+    ;move.l (a3)+,(a2)+
+    ;move.l (a3)+,(a2)+
+    ;move.l (a3)+,(a2)+
+    ;move.l (a3)+,(a2)+
+    ;lea 480-16(a3),a3
+    ;lea 480-16(a2),a2
+    ;endr
     bra .end_loop
 
 .clear_16_pixels
-    rept 16
-    move.l (a3)+,(a2)+
-    move.l (a3)+,(a2)+
-    lea 480-8(a3),a3
-    lea 480-8(a2),a2
-    endr
+    lea $ffff8a20.w,a4
+    move.w #2,(a4)+      ; srcxinc 8a20
+    move.w #480-6,(a4)+  ; srcyinc 8a22
+    move.l a3,(a4)+      ; src address 8a24
+    move.w #$ffff,(a4)+   ; endmask1 8a28
+    move.w #$ffff,(a4)+   ; endmask2 8a2a
+    move.w #$ffff,(a4)+   ; endmask3 8a2c
+    move.w #2,(a4)+      ; dstxinc 8a2e
+    move.w #480-6,(a4)+  ; dstyinc 8a30
+    move.l a2,(a4)+      ; dst address 8a32
+    move.w #4,(a4)+      ; xcount 8a36
+    move.w #16,(a4)+     ; ycount 8a38
+    move.w #$0203,(a4)+  ; hop/op 8a3a
+    move.w #$c000,(a4)+   ; blitter control 8a3c
+
+    ;rept 16
+    ;move.l (a3)+,(a2)+
+    ;move.l (a3)+,(a2)+
+    ;lea 480-8(a3),a3
+    ;lea 480-8(a2),a2
+    ;endr
 
 .end_loop
     dbra d0,.loop   ; decrement sprites drawn
