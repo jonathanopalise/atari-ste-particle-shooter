@@ -8,7 +8,7 @@
 #include "random.h"
 #include "viewport.h"
 
-#define GRAVITY 400
+#define GRAVITY 800
 
 struct Particle particles[PARTICLE_COUNT];
 

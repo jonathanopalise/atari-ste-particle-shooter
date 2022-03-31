@@ -80,6 +80,7 @@ _sprite_render_inner_draw:
 .lines_of_16_pixels
     ; 16 pixel size handling
     ; this should have a dedicated drawing routine to itself
+    ; we can use .clear_16_pixels below as a basis
     move.w #$ffff,$ffff8a28.w                  ; endmask1 8a28
     move.w #480,$ffff8a30.w             ; dest y increment 8a30
     move.w #1,$ffff8a36.w                ; xcount 8a36
@@ -128,94 +129,69 @@ _sprite_render_inner_erase:
     ; };
 
     move.l a7,a0
-    movem.l d2-d7/a2-a6,-(sp)
-    ; don't forget push regs
+    movem.l d2-d7/a2-a4,-(sp)
 
     move.w 4+2(a0),d0 ; sprites drawn
     move.l 16(a0),a1  ; dest buffer
     sub.l 12(a0),a1   ; difference between dest buffer and restore buffer
     move.l 8(a0),a0   ; sprite draw records
 
+    moveq.l #-1,d2
+    moveq.l #2,d3
+
     lea $ffff8a20.w,a4
-    move.w #2,(a4)+      ; srcxinc 8a20
+    move.w d3,(a4)+      ; srcxinc 8a20
     addq.l #6,a4
-    move.w #$ffff,(a4)+   ; endmask1 8a28
-    move.w #$ffff,(a4)+   ; endmask2 8a2a
-    move.w #$ffff,(a4)+   ; endmask3 8a2c
-    move.w #2,(a4)+      ; dstxinc 8a2e
+    move.w d2,(a4)+   ; endmask1 8a28
+    move.w d2,(a4)+   ; endmask2 8a2a
+    move.w d2,(a4)+   ; endmask3 8a2c
+    move.w d3,(a4)+      ; dstxinc 8a2e
     lea 10(a4),a4
     move.w #$0203,(a4)+  ; hop/op 8a3a
 
-;.test
-;    bra.s .test
+    move.w #480-14,d2
+    move.w #480-6,d3
+    moveq.l #16,d4
+    move.w #$c000,d5
+    moveq.l #4,d6
+    moveq.l #8,d7
 
-    bra .end_loop
+    bra.s .end_loop
 .loop:
     move.l (a0)+,a2  ; get dest pointer
     move.l a2,a3     ; copy dest pointer to a3
     sub.l  a1,a3     ; calc source pointer
-    cmp.w #0,(a0)+   ; ignore draw width for now
-    beq .clear_16_pixels
+    tst.w (a0)+   ; ignore draw width for now
+    beq.s .clear_16_pixels
 
 .clear_32_pixels
     lea $ffff8a22.w,a4
-    move.w #480-14,(a4)+  ; srcyinc 8a22      INCLUDE
+    move.w d2,(a4)+  ; srcyinc 8a22      INCLUDE
     move.l a3,(a4)+      ; src address 8a24   INCLUDE
-    lea 8(a4),a4
-    move.w #480-14,(a4)+  ; dstyinc 8a30      INCLUDE
+    addq.l #8,a4
+    move.w d2,(a4)+  ; dstyinc 8a30      INCLUDE
     move.l a2,(a4)+      ; dst address 8a32   INCLUDE
-    move.w #8,(a4)+      ; xcount 8a36        INCLUDE
-    move.w #16,(a4)+     ; ycount 8a38        INCLUDE
+    move.w d7,(a4)+      ; xcount 8a36        INCLUDE
+    move.w d4,(a4)+     ; ycount 8a38        INCLUDE
     addq.l #2,a4
-    move.w #$c000,(a4)+   ; blitter control 8a3c
-
-    ;rept 16
-    ;move.l (a3)+,(a2)+
-    ;move.l (a3)+,(a2)+
-    ;move.l (a3)+,(a2)+
-    ;move.l (a3)+,(a2)+
-    ;lea 480-16(a3),a3
-    ;lea 480-16(a2),a2
-    ;endr
+    move.w d5,(a4)+   ; blitter control 8a3c
     bra .end_loop
 
 .clear_16_pixels
-    ;lea $ffff8a20.w,a4
-    ;move.w #2,(a4)+      ; srcxinc 8a20
-    ;move.w #480-6,(a4)+  ; srcyinc 8a22         DIFFERENT
-    ;move.l a3,(a4)+      ; src address 8a24
-    ;move.w #$ffff,(a4)+   ; endmask1 8a28
-    ;move.w #$ffff,(a4)+   ; endmask2 8a2a
-    ;move.w #$ffff,(a4)+   ; endmask3 8a2c
-    ;move.w #2,(a4)+      ; dstxinc 8a2e
-    ;move.w #480-6,(a4)+  ; dstyinc 8a30         DIFFERENT
-    ;move.l a2,(a4)+      ; dst address 8a32
-    ;move.w #4,(a4)+      ; xcount 8a36          DIFFERENT
-    ;move.w #16,(a4)+     ; ycount 8a38
-    ;move.w #$0203,(a4)+  ; hop/op 8a3a
-    ;move.w #$c000,(a4)+   ; blitter control 8a3c EACH PASS
-
     lea $ffff8a22.w,a4
-    move.w #480-6,(a4)+  ; srcyinc 8a22      INCLUDE
+    move.w d3,(a4)+  ; srcyinc 8a22      INCLUDE
     move.l a3,(a4)+      ; src address 8a24   INCLUDE
-    lea 8(a4),a4
-    move.w #480-6,(a4)+  ; dstyinc 8a30      INCLUDE
+    addq.l #8,a4
+    move.w d3,(a4)+  ; dstyinc 8a30      INCLUDE
     move.l a2,(a4)+      ; dst address 8a32   INCLUDE
-    move.w #4,(a4)+      ; xcount 8a36        INCLUDE
-    move.w #16,(a4)+     ; ycount 8a38        INCLUDE
+    move.w d6,(a4)+      ; xcount 8a36        INCLUDE
+    move.w d4,(a4)+     ; ycount 8a38        INCLUDE
     addq.l #2,a4
-    move.w #$c000,(a4)+   ; blitter control 8a3c
-
-    ;rept 16
-    ;move.l (a3)+,(a2)+
-    ;move.l (a3)+,(a2)+
-    ;lea 480-8(a3),a3
-    ;lea 480-8(a2),a2
-    ;endr
+    move.w d5,(a4)+   ; blitter control 8a3c
 
 .end_loop
     dbra d0,.loop   ; decrement sprites drawn
-    movem.l (sp)+,d2-d7/a2-a6
+    movem.l (sp)+,d2-d7/a2-a4
 
     rts
 
