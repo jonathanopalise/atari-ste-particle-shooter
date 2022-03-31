@@ -1,5 +1,6 @@
 #include "sprite_system.h"
 #include "particle_system.h"
+#include "random.h"
 
 #define EXPLOSION_FRAME_INTERVAL 4
 #define EXPLOSION_SPAWN_PARAMS_COUNT 128
@@ -41,6 +42,8 @@ void explosion_sprite_init_attributes(struct Sprite *sprite)
     explosion_sprite_attributes->current_animation_frame = 0;
     explosion_sprite_attributes->frames_until_next_animation_frame = EXPLOSION_FRAME_INTERVAL;
 
+    sprite->image_index = SPRITE_IMAGE_EXPLOSION_1;
+
     for (uint16_t index = 0; index < 16; index++) {
         current_explosion_spawn_params = &explosion_spawn_params[current_explosion_spawn_params_offset];
 
@@ -55,8 +58,6 @@ void explosion_sprite_init_attributes(struct Sprite *sprite)
         current_explosion_spawn_params_offset++;
         current_explosion_spawn_params_offset &= (EXPLOSION_SPAWN_PARAMS_COUNT - 1);
     }
-
-    sprite->image_index = SPRITE_IMAGE_EXPLOSION_1;
 }
 
 void explosion_sprite_update_attributes(struct Sprite *sprite)
@@ -65,6 +66,7 @@ void explosion_sprite_update_attributes(struct Sprite *sprite)
 
     explosion_sprite_attributes = (struct ExplosionSpriteAttributes *)sprite->additional_data;
     explosion_sprite_attributes->frames_until_next_animation_frame--;
+
     if (explosion_sprite_attributes->frames_until_next_animation_frame == 0) {
         if (explosion_sprite_attributes->current_animation_frame == SPRITE_IMAGE_EXPLOSION_11) {
             sprite->active = 0;

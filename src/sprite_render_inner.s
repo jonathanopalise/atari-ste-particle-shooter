@@ -1,6 +1,13 @@
     public _sprite_render_inner_draw
     public _sprite_render_inner_erase
 
+    macro drawplane
+    move.l a0,$ffff8a24.w      ; set source address
+    move.l a1,$ffff8a32.w      ; set destination
+    move.w #16,$ffff8a38.w     ; ycount (needs to be 16, for 16 lines)
+    move.b #$c0,$ffff8a3c.w    ; control
+    endm
+
 _sprite_render_inner_draw:
     ; a0 needs to be graphics source
     ; a1 needs to be graphics destination
@@ -33,58 +40,19 @@ _sprite_render_inner_draw:
 
     move.b d2,$ffff8a3d.w
     tst.w d2
-    beq.s .lines_of_16_pixels
-
-.lines_of_32_pixels:
+    beq .lines_of_16_pixels
 
     ; 32 pixels size handling
     move.w #480-8,$ffff8a30.w             ; dest y increment 8a30
     move.w #2,$ffff8a36.w                ; xcount 8a36
+    or.b #$40,$ffff8a3d.w
+
     add.w d2,d2
-    move.w leftendmasks(pc,d2),$ffff8a28.w
-    move.w rightendmasks(pc,d2),$ffff8a2c.w
-    bra.s .after_size
+    move.w .leftendmasks(pc,d2),$ffff8a28.w
+    move.w .rightendmasks(pc,d2),$ffff8a2c.w
+    bra .after_size
 
-.lines_of_16_pixels
-    ; 16 pixel size handling
-    move.w #480,$ffff8a30.w             ; dest y increment 8a30
-    move.w #1,$ffff8a36.w                ; xcount 8a36
-
-.after_size
-
-    rept 3
-    bsr.s drawplane
-    addq.l #2,a1                        ; move to next bitplane
-    endr
-    bsr.s drawplane
-
-    subq.l #6,a1                        ; move destination back to initial bitplane
-    move.w #$0207,$ffff8a3a.w           ; hop/op: read from source, source | destination
-
-    addq.l #2,a0                        ; move source to next bitplane
-    bsr.s drawplane
-    addq.l #2,a1                        ; move destination to next bitplane
-    addq.l #2,a0                        ; move source to next bitplane
-    bsr.s drawplane
-    addq.l #2,a1                        ; move destination to next bitplane
-    addq.l #2,a0                        ; move source to next bitplane
-    bsr.s drawplane
-    addq.l #2,a1                        ; move destination to next bitplane
-    addq.l #2,a0                        ; move source to next bitplane
-    bsr.s drawplane
-
-alldone:
-    movem.l (sp)+,d2-d7/a2-a6
-    rts
-
-drawplane:
-    move.l a0,$ffff8a24.w      ; set source address
-    move.l a1,$ffff8a32.w      ; set destination
-    move.w #16,$ffff8a38.w     ; ycount (needs to be 16, for 16 lines)
-    move.b #$c0,$ffff8a3c.w    ; control
-    rts
-
-leftendmasks:
+.leftendmasks:
 
     dc.w %1111111111111111
     dc.w %0111111111111111
@@ -103,7 +71,7 @@ leftendmasks:
     dc.w %0000000000000011
     dc.w %0000000000000001
 
-rightendmasks:
+.rightendmasks:
 
     dc.w %1111111111111111
     dc.w %1000000000000000
@@ -121,6 +89,47 @@ rightendmasks:
     dc.w %1111111111111000
     dc.w %1111111111111100
     dc.w %1111111111111110
+
+.lines_of_16_pixels
+    ; 16 pixel size handling
+    move.w #480,$ffff8a30.w             ; dest y increment 8a30
+    move.w #1,$ffff8a36.w                ; xcount 8a36
+
+.after_size
+
+    drawplane
+    addq.l #2,a1                        ; move to next bitplane
+    drawplane
+    addq.l #2,a1                        ; move to next bitplane
+    drawplane
+    addq.l #2,a1                        ; move to next bitplane
+    drawplane
+
+    subq.l #6,a1                        ; move destination back to initial bitplane
+    move.w #$0207,$ffff8a3a.w           ; hop/op: read from source, source | destination
+
+    addq.l #2,a0                        ; move source to next bitplane
+    drawplane
+    addq.l #2,a1                        ; move destination to next bitplane
+    addq.l #2,a0                        ; move source to next bitplane
+    drawplane
+    addq.l #2,a1                        ; move destination to next bitplane
+    addq.l #2,a0                        ; move source to next bitplane
+    drawplane
+    addq.l #2,a1                        ; move destination to next bitplane
+    addq.l #2,a0                        ; move source to next bitplane
+    drawplane
+
+alldone:
+    movem.l (sp)+,d2-d7/a2-a6
+    rts
+
+drawplane:
+    move.l a0,$ffff8a24.w      ; set source address
+    move.l a1,$ffff8a32.w      ; set destination
+    move.w #16,$ffff8a38.w     ; ycount (needs to be 16, for 16 lines)
+    move.b #$c0,$ffff8a3c.w    ; control
+    rts
 
 _sprite_render_inner_erase:
     ; struct SpriteDrawRecord {
