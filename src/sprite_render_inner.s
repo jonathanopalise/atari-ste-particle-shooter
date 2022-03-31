@@ -136,6 +136,16 @@ _sprite_render_inner_erase:
     sub.l 12(a0),a1   ; difference between dest buffer and restore buffer
     move.l 8(a0),a0   ; sprite draw records
 
+    lea $ffff8a20.w,a4
+    move.w #2,(a4)+      ; srcxinc 8a20
+    addq.l #6,a4
+    move.w #$ffff,(a4)+   ; endmask1 8a28
+    move.w #$ffff,(a4)+   ; endmask2 8a2a
+    move.w #$ffff,(a4)+   ; endmask3 8a2c
+    move.w #2,(a4)+      ; dstxinc 8a2e
+    lea 10(a4),a4
+    move.w #$0203,(a4)+  ; hop/op 8a3a
+
 ;.test
 ;    bra.s .test
 
@@ -148,19 +158,15 @@ _sprite_render_inner_erase:
     beq .clear_16_pixels
 
 .clear_32_pixels
-    lea $ffff8a20.w,a4
-    move.w #2,(a4)+      ; srcxinc 8a20
-    move.w #480-14,(a4)+  ; srcyinc 8a22
-    move.l a3,(a4)+      ; src address 8a24
-    move.w #$ffff,(a4)+   ; endmask1 8a28
-    move.w #$ffff,(a4)+   ; endmask2 8a2a
-    move.w #$ffff,(a4)+   ; endmask3 8a2c
-    move.w #2,(a4)+      ; dstxinc 8a2e
-    move.w #480-14,(a4)+  ; dstyinc 8a30
-    move.l a2,(a4)+      ; dst address 8a32
-    move.w #8,(a4)+      ; xcount 8a36
-    move.w #16,(a4)+     ; ycount 8a38
-    move.w #$0203,(a4)+  ; hop/op 8a3a
+    lea $ffff8a22.w,a4
+    move.w #480-14,(a4)+  ; srcyinc 8a22      INCLUDE
+    move.l a3,(a4)+      ; src address 8a24   INCLUDE
+    lea 8(a4),a4
+    move.w #480-14,(a4)+  ; dstyinc 8a30      INCLUDE
+    move.l a2,(a4)+      ; dst address 8a32   INCLUDE
+    move.w #8,(a4)+      ; xcount 8a36        INCLUDE
+    move.w #16,(a4)+     ; ycount 8a38        INCLUDE
+    addq.l #2,a4
     move.w #$c000,(a4)+   ; blitter control 8a3c
 
     ;rept 16
@@ -174,19 +180,30 @@ _sprite_render_inner_erase:
     bra .end_loop
 
 .clear_16_pixels
-    lea $ffff8a20.w,a4
-    move.w #2,(a4)+      ; srcxinc 8a20
-    move.w #480-6,(a4)+  ; srcyinc 8a22
-    move.l a3,(a4)+      ; src address 8a24
-    move.w #$ffff,(a4)+   ; endmask1 8a28
-    move.w #$ffff,(a4)+   ; endmask2 8a2a
-    move.w #$ffff,(a4)+   ; endmask3 8a2c
-    move.w #2,(a4)+      ; dstxinc 8a2e
-    move.w #480-6,(a4)+  ; dstyinc 8a30
-    move.l a2,(a4)+      ; dst address 8a32
-    move.w #4,(a4)+      ; xcount 8a36
-    move.w #16,(a4)+     ; ycount 8a38
-    move.w #$0203,(a4)+  ; hop/op 8a3a
+    ;lea $ffff8a20.w,a4
+    ;move.w #2,(a4)+      ; srcxinc 8a20
+    ;move.w #480-6,(a4)+  ; srcyinc 8a22         DIFFERENT
+    ;move.l a3,(a4)+      ; src address 8a24
+    ;move.w #$ffff,(a4)+   ; endmask1 8a28
+    ;move.w #$ffff,(a4)+   ; endmask2 8a2a
+    ;move.w #$ffff,(a4)+   ; endmask3 8a2c
+    ;move.w #2,(a4)+      ; dstxinc 8a2e
+    ;move.w #480-6,(a4)+  ; dstyinc 8a30         DIFFERENT
+    ;move.l a2,(a4)+      ; dst address 8a32
+    ;move.w #4,(a4)+      ; xcount 8a36          DIFFERENT
+    ;move.w #16,(a4)+     ; ycount 8a38
+    ;move.w #$0203,(a4)+  ; hop/op 8a3a
+    ;move.w #$c000,(a4)+   ; blitter control 8a3c EACH PASS
+
+    lea $ffff8a22.w,a4
+    move.w #480-6,(a4)+  ; srcyinc 8a22      INCLUDE
+    move.l a3,(a4)+      ; src address 8a24   INCLUDE
+    lea 8(a4),a4
+    move.w #480-6,(a4)+  ; dstyinc 8a30      INCLUDE
+    move.l a2,(a4)+      ; dst address 8a32   INCLUDE
+    move.w #4,(a4)+      ; xcount 8a36        INCLUDE
+    move.w #16,(a4)+     ; ycount 8a38        INCLUDE
+    addq.l #2,a4
     move.w #$c000,(a4)+   ; blitter control 8a3c
 
     ;rept 16
