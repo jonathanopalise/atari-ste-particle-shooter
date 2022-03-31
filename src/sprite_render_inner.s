@@ -10,7 +10,7 @@
 
 _sprite_render_inner_draw:
     move.l a7,a0
-    movem.l d2-d7/a2-a6,-(sp)
+    movem.l a2-a6,-(sp)
 
     ; a0(4) = source
     ; a0(8) = destination
@@ -21,18 +21,18 @@ _sprite_render_inner_draw:
     move.w #10,(a3)+                             ; source y increment 8a22
     move.w #8,$ffff8a2e.w                        ; dest x increment 8a2e 
 
-    move.w 12+2(a0),d2                           ; skew
+    move.w 12+2(a0),d0                           ; skew
     move.l 8(a0),a1                              ; dest address 8a32
     move.l 4(a0),a0                              ; source address 8a24
 
-    move.b d2,$ffff8a3d.w
-    tst.w d2
+    move.b d0,$ffff8a3d.w
+    tst.w d0
     beq .lines_of_16_pixels
 
     ; 32 pixels size handling
-    add.w d2,d2
-    move.w .leftendmasks(pc,d2),$ffff8a28.w      ; endmask1
-    move.w .rightendmasks(pc,d2),$ffff8a2c.w     ; endmask3
+    add.w d0,d0
+    move.w .leftendmasks(pc,d0),$ffff8a28.w      ; endmask1
+    move.w .rightendmasks(pc,d0),$ffff8a2c.w     ; endmask3
     move.w #480-8,$ffff8a30.w                    ; dest y increment 8a30
     move.w #2,$ffff8a36.w                        ; xcount 8a36
     or.b #$40,$ffff8a3d.w                        ; nfsr
@@ -79,6 +79,7 @@ _sprite_render_inner_draw:
 
 .lines_of_16_pixels
     ; 16 pixel size handling
+    ; this should have a dedicated drawing routine to itself
     move.w #$ffff,$ffff8a28.w                  ; endmask1 8a28
     move.w #480,$ffff8a30.w             ; dest y increment 8a30
     move.w #1,$ffff8a36.w                ; xcount 8a36
@@ -117,7 +118,7 @@ _sprite_render_inner_draw:
     addq.l #2,a0                        ; move source to next bitplane
     drawplane
 
-    movem.l (sp)+,d2-d7/a2-a6
+    movem.l (sp)+,a2-a6
     rts
 
 _sprite_render_inner_erase:
