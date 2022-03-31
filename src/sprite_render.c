@@ -1,6 +1,7 @@
 #include "hardware.h"
 #include "hardware_playfield.h"
 #include "hardware_playfield_restore_buffer.h"
+#include "hardware_playfield_ypos_lookup.h"
 #include "hardware_viewport.h"
 #include "logical_viewport.h"
 #include "sprite_common.h"
@@ -46,7 +47,7 @@ void sprite_render_draw_sprites()
             // calculate the address of the 16 pixel block within the hardware
             // playfield for this sprite
             hardware_playfield_sprite_offset =
-                (480 * logical_viewport_sprite_ypos) +
+                (hardware_playfield_ypos_lookup[logical_viewport_sprite_ypos]) +
                 ((hardware_viewport_sprite_xpos >> 4) << 3);
 
             hardware_playfield_sprite_ptr = &hardware_playfield_buffer[hardware_playfield_sprite_offset];
