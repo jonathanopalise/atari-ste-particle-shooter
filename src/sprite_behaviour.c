@@ -15,7 +15,7 @@ struct SpriteBehaviour sprite_behaviours[] = {
     },
     // type 1 - mine
     {
-        &mine_sprite_init_type,
+        NULL,
         &mine_sprite_init_attributes,
         &mine_sprite_update_attributes,
         &mine_sprite_handle_player_bullet,
@@ -23,7 +23,7 @@ struct SpriteBehaviour sprite_behaviours[] = {
     },
     // type 2 - explosion
     {
-        NULL,
+        &explosion_sprite_init_type,
         &explosion_sprite_init_attributes,
         &explosion_sprite_update_attributes,
         NULL,
