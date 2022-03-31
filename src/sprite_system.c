@@ -4,14 +4,19 @@
 #include "logical_viewport.h"
 #include "sprite_behaviour.h"
 #include "sprite_system.h"
+#include "sprite_common.h"
 #include "hardware_playfield.h"
 #include "random.h"
 #include "viewport.h"
 
-struct Sprite sprites[PARTICLE_COUNT];
+struct Sprite sprites[SPRITE_COUNT];
 
 struct Sprite *first_active_sprite;
 struct Sprite *first_free_sprite;
+
+struct Sprite *player_bullet_collidable_sprites[SPRITE_COUNT];
+struct Sprite *current_player_bullet_collidable_sprites[SPRITE_COUNT];
+uint16_t player_bullet_collidable_sprites_count;
 
 void sprite_system_init()
 {
@@ -25,11 +30,9 @@ void sprite_system_init()
     sprites[SPRITE_COUNT - 1].next = NULL;
 }
 
-void sprite_system_update_system()
+static void sprite_system_apply_behaviours()
 {
     struct Sprite *current_sprite = first_active_sprite;
-    struct Sprite **last_unkilled_sprite_next_ptr = &first_active_sprite;
-    struct Sprite *tmp_sprite;
     struct SpriteBehaviour *sprite_behaviour;
 
     // TODO: deduplicate: these also exist in particle system
@@ -46,7 +49,6 @@ void sprite_system_update_system()
                 (current_sprite->precision_world_xpos < (precision_logical_viewport_left_xpos - (SPRITE_WIDTH << 16))) ||
                 (current_sprite->precision_world_xpos > precision_logical_viewport_right_xpos)) {
                 if (current_sprite->has_been_visible_since_spawn) {
-                    // if sprite is off screen, but has been on the screen, kill it
                     current_sprite->active = 0;
                 }
             } else {
@@ -54,6 +56,17 @@ void sprite_system_update_system()
             }
         }
 
+        current_sprite = current_sprite->next;
+    }
+}
+
+static void sprite_system_update_free_list()
+{
+    struct Sprite *current_sprite = first_active_sprite;
+    struct Sprite **last_unkilled_sprite_next_ptr = &first_active_sprite;
+    struct Sprite *tmp_sprite;
+
+    while (current_sprite) {
         if (!current_sprite->active) {
             // remove dead sprite from the active list
             *last_unkilled_sprite_next_ptr = current_sprite->next;
@@ -70,11 +83,17 @@ void sprite_system_update_system()
     }
 }
 
+void sprite_system_update_system()
+{
+    sprite_system_apply_behaviours();
+    sprite_system_update_free_list();
+}
+
 void sprite_system_manage_waves()
 {
     int32_t precision_logical_viewport_left_xpos = logical_viewport_left_xpos << 16;
 
-    if ((logical_viewport_left_xpos % 64) == 0) {
+    if ((logical_viewport_left_xpos & 63) == 63) {
         sprite_system_spawn(
             precision_logical_viewport_left_xpos + (VIEWPORT_WIDTH << 16),
             random() % ((VIEWPORT_HEIGHT - 16) << 16),
