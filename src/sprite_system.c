@@ -24,6 +24,13 @@ void sprite_system_init()
     }
 
     sprites[SPRITE_COUNT - 1].next = NULL;
+
+    // TODO: deal with hardcoded 3
+    for (uint16_t index = 0; index < 3; index++) {
+        if (sprite_behaviours[index].init_type) {
+            sprite_behaviours[index].init_type();
+        }
+    }
 }
 
 void sprite_system_update_system()

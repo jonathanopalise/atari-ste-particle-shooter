@@ -13,11 +13,11 @@ static void player_sprite_spawn_exhaust_particles(struct Sprite *sprite);
 
 void player_sprite_init_attributes(struct Sprite *sprite)
 {
-    /*struct PlayerSpriteAttributes *player_sprite_attributes;
+    struct PlayerSpriteAttributes *player_sprite_attributes;
    
     player_sprite_attributes = (struct PlayerSpriteAttributes *)sprite->additional_data;
     player_sprite_attributes->last_joy_fire = 0;
-    player_sprite_attributes->frames_until_next_bullet = 10;*/
+    player_sprite_attributes->frames_until_next_bullet = 10;
 
     sprite->image_index = SPRITE_IMAGE_PLAYER;
 }

@@ -3,6 +3,8 @@
 
 #include "sprite_system.h"
 
+void mine_sprite_init_type();
+
 void mine_sprite_init_attributes(struct Sprite *sprite);
 
 void mine_sprite_update_attributes(struct Sprite *sprite);
