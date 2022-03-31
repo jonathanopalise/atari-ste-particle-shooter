@@ -2,19 +2,13 @@
     public _sprite_render_inner_erase
 
     macro drawplane
-    move.l a0,$ffff8a24.w      ; set source address
-    move.l a1,$ffff8a32.w      ; set destination
-    move.w #16,$ffff8a38.w     ; ycount (needs to be 16, for 16 lines)
-    move.b #$c0,$ffff8a3c.w    ; control
+    move.l a0,(a2)      ; set source address
+    move.l a1,(a3)      ; set destination
+    move.w d0,(a4)     ; ycount (needs to be 16, for 16 lines)
+    move.b d1,(a5)    ; control
     endm
 
 _sprite_render_inner_draw:
-    ; a0 needs to be graphics source
-    ; a1 needs to be graphics destination
-
-    ; source x increment 10
-    ; dest x increment 8
-
     move.l a7,a0
     movem.l d2-d7/a2-a6,-(sp)
 
@@ -23,33 +17,26 @@ _sprite_render_inner_draw:
     ; a0(12+2) = skew (ignore for now, assume 0)
 
     lea $ffff8a20.w,a3
-    move.w #0,(a3)+                     ; source x increment 8a20
-    move.w #10,(a3)+                      ; source y increment 8a22
-    addq.l #4,a3                         ; skip source address 8a24 - we'll set it later
-    move.w #$ffff,(a3)+                  ; endmask1 8a28
-    move.w #$ffff,(a3)+                  ; endmask2 8a2a
-    move.w #$ffff,(a3)+                  ; endmask3 8a2c
-    move.w #8,(a3)+                      ; dest x increment 8a2e 
-    ;move.w #480,(a3)+                    ; dest y increment 8a30
+    move.w #0,(a3)+                              ; source x increment 8a20
+    move.w #10,(a3)+                             ; source y increment 8a22
+    move.w #8,$ffff8a2e.w                        ; dest x increment 8a2e 
 
-    move.w #$201,$ffff8a3a.w             ; hop/op: read from source, source & destination
-
-    move.w 12+2(a0),d2                   ; skew = 0
-    move.l 8(a0),a1                      ; dest address 8a32
-    move.l 4(a0),a0                      ; source address 8a24
+    move.w 12+2(a0),d2                           ; skew
+    move.l 8(a0),a1                              ; dest address 8a32
+    move.l 4(a0),a0                              ; source address 8a24
 
     move.b d2,$ffff8a3d.w
     tst.w d2
     beq .lines_of_16_pixels
 
     ; 32 pixels size handling
-    move.w #480-8,$ffff8a30.w             ; dest y increment 8a30
-    move.w #2,$ffff8a36.w                ; xcount 8a36
-    or.b #$40,$ffff8a3d.w
-
     add.w d2,d2
-    move.w .leftendmasks(pc,d2),$ffff8a28.w
-    move.w .rightendmasks(pc,d2),$ffff8a2c.w
+    move.w .leftendmasks(pc,d2),$ffff8a28.w      ; endmask1
+    move.w .rightendmasks(pc,d2),$ffff8a2c.w     ; endmask3
+    move.w #480-8,$ffff8a30.w                    ; dest y increment 8a30
+    move.w #2,$ffff8a36.w                        ; xcount 8a36
+    or.b #$40,$ffff8a3d.w                        ; nfsr
+
     bra .after_size
 
 .leftendmasks:
@@ -92,10 +79,20 @@ _sprite_render_inner_draw:
 
 .lines_of_16_pixels
     ; 16 pixel size handling
+    move.w #$ffff,$ffff8a28.w                  ; endmask1 8a28
     move.w #480,$ffff8a30.w             ; dest y increment 8a30
     move.w #1,$ffff8a36.w                ; xcount 8a36
 
 .after_size
+
+    lea $ffff8a24.w,a2
+    lea $ffff8a32.w,a3
+    lea $ffff8a38.w,a4
+    lea $ffff8a3c.w,a5
+    move.w #16,d0
+    move.w #$c0,d1
+
+    move.w #$201,$ffff8a3a.w            ; hop/op: read from source, source & destination
 
     drawplane
     addq.l #2,a1                        ; move to next bitplane
@@ -120,15 +117,7 @@ _sprite_render_inner_draw:
     addq.l #2,a0                        ; move source to next bitplane
     drawplane
 
-alldone:
     movem.l (sp)+,d2-d7/a2-a6
-    rts
-
-drawplane:
-    move.l a0,$ffff8a24.w      ; set source address
-    move.l a1,$ffff8a32.w      ; set destination
-    move.w #16,$ffff8a38.w     ; ycount (needs to be 16, for 16 lines)
-    move.b #$c0,$ffff8a3c.w    ; control
     rts
 
 _sprite_render_inner_erase:
