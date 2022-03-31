@@ -30,7 +30,7 @@ void sprite_system_init()
     sprites[SPRITE_COUNT - 1].next = NULL;
 }
 
-static void sprite_system_apply_behaviours()
+void sprite_system_update_system()
 {
     struct Sprite *current_sprite = first_active_sprite;
     struct SpriteBehaviour *sprite_behaviour;
@@ -60,7 +60,7 @@ static void sprite_system_apply_behaviours()
     }
 }
 
-static void sprite_system_update_free_list()
+void sprite_system_update_free_list()
 {
     struct Sprite *current_sprite = first_active_sprite;
     struct Sprite **last_unkilled_sprite_next_ptr = &first_active_sprite;
@@ -81,12 +81,6 @@ static void sprite_system_update_free_list()
             current_sprite = current_sprite->next;
         }
     }
-}
-
-void sprite_system_update_system()
-{
-    sprite_system_apply_behaviours();
-    sprite_system_update_free_list();
 }
 
 void sprite_system_manage_waves()

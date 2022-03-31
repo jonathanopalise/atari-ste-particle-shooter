@@ -20,6 +20,7 @@ void game_loop()
     while (1) {
         sprite_system_manage_waves();
         sprite_system_update_system();
+        sprite_system_update_free_list();
         particle_system_update_system();
         particle_system_update_free_list();
         *((volatile uint16_t *)0xffff8240) = 0x040; // green
