@@ -46,14 +46,6 @@ void collision_detection_handle_player_bullet_collisions()
         current_sprite = current_sprite->next;
     }
 
-
-    /*if (collidable_sprite_count > 0) {
-        while (1==1) {}
-    }*/
-    /*if (collidable_particle_count > 0) {
-        while (1==1) {}
-    }*/
-
     current_collidable_sprite_ptr = collidable_sprite_ptrs;
     for (sprite_index = 0; sprite_index < collidable_sprite_count; sprite_index++) {
         current_collidable_particle_ptr = collidable_particle_ptrs;
@@ -66,7 +58,7 @@ void collision_detection_handle_player_bullet_collisions()
                     (current_collidable_particle->precision_world_ypos > current_collidable_sprite->precision_world_ypos) &&
                     (current_collidable_particle->precision_world_ypos < (current_collidable_sprite->precision_world_ypos + (SPRITE_HEIGHT << 16)))
                 ) {
-                    current_collidable_sprite->active = 0;
+                    sprite_behaviours[current_collidable_sprite->type].handle_player_bullet_collision(current_collidable_sprite);
                     current_collidable_particle->active = 0;
                 }
             }
