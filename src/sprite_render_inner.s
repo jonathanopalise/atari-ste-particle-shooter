@@ -16,11 +16,6 @@ _sprite_render_inner_draw:
     ; a0(8) = destination
     ; a0(12+2) = skew (ignore for now, assume 0)
 
-    lea $ffff8a20.w,a3
-    move.w #0,(a3)+                              ; source x increment 8a20
-    move.w #12,(a3)+                             ; source y increment 8a22
-    move.w #8,$ffff8a2e.w                        ; dest x increment 8a2e 
-
     move.w 12+2(a0),d0                           ; skew
     move.l 8(a0),a1                              ; dest address 8a32
     move.l 4(a0),a0                              ; source address 8a24
@@ -47,15 +42,12 @@ _sprite_render_inner_draw:
     move.w #$020c,$ffff8a3a.w            ; hop/op
 
     move.b d0,d1                         ; copy skew to d1
-    ;move.b #13,d1 ;HARDCODE SKEW TO 14 for TESTING
     or.b #$80,d1                         ; apply fsxr
     move.b d1,$ffff8a3d.w                ; skew/fxsr register
 
     move.w #2,$ffff8a36.w                ; xcount
-    rept 16
-    move.w #1,$ffff8a38.w               ; ycount
+    move.w #16,$ffff8a38.w               ; ycount
     move.b #$c0,$ffff8a3c.w              ; control
-    endr
 
     ; a2 still contains shifted buffer address
     ; now draw the mask
@@ -74,23 +66,29 @@ _sprite_render_inner_draw:
     lea 480(a1),a1 
     endr
 
-    bra .alldone
+    lea 66(a0),a0 ; move onto colour data
+    lea -480*16(a1),a1 ; reset dest to original position for colour pass
 
-    ; reset a1 to original position
-    lea -480*16(a1),a1
+    ; time for the colour pass
 
-
+    lea $ffff8a20.w,a3
+    move.w #0,(a3)+                              ; source x increment 8a20
+    move.w #10,(a3)+                             ; source y increment 8a22
+    ; source 8a24 set per pass
+    move.b d0,$ffff8a3d.w
     add.w d0,d0
-    move.w .leftendmasks(pc,d0),$ffff8a28.w      ; endmask1
-    move.w .rightendmasks(pc,d0),$ffff8a2c.w     ; endmask3
+    move.w .leftendmasks(pc,d0),$ffff8a28.w      ; endmask1 8a28
+    move.w #$ffff,$ffff8a2a.w                    ; endmask2 8a2a
+    move.w .rightendmasks(pc,d0),$ffff8a2c.w     ; endmask3 8a2c
+    move.w #8,$ffff8a2e.w                        ; dest x increment 8a2e 
     move.w #480-8,$ffff8a30.w                    ; dest y increment 8a30
     move.w #2,$ffff8a36.w                        ; xcount 8a36
+    ; ycount 8a38 set per pass
+    move.w #$0207,$ffff8a3a.w           ; hop/op: read from source, source | destination
+    ; control 8a3c set per pass
     or.b #$40,$ffff8a3d.w                        ; nfsr
 
     bra .after_size
-
-.shifted_buffer:
-    ds.w 32 ; 1 empty word plus two mask words
 
 .leftendmasks:
 
@@ -130,6 +128,10 @@ _sprite_render_inner_draw:
     dc.w %1111111111111100
     dc.w %1111111111111110
 
+
+.shifted_buffer:
+    ds.w 32 ; 1 empty word plus two mask words
+
 .lines_of_16_pixels
     ; 16 pixel size handling
     ; this should have a dedicated drawing routine to itself
@@ -147,20 +149,9 @@ _sprite_render_inner_draw:
     move.w #16,d0
     move.w #$c0,d1
 
-    move.w #$201,$ffff8a3a.w            ; hop/op: read from source, source & destination
+;.foo
+;    bra.s .foo
 
-    drawplane
-    addq.l #2,a1                        ; move to next bitplane
-    drawplane
-    addq.l #2,a1                        ; move to next bitplane
-    drawplane
-    addq.l #2,a1                        ; move to next bitplane
-    drawplane
-
-    subq.l #6,a1                        ; move destination back to initial bitplane
-    move.w #$0207,$ffff8a3a.w           ; hop/op: read from source, source | destination
-
-    addq.l #2,a0                        ; move source to next bitplane
     drawplane
     addq.l #2,a1                        ; move destination to next bitplane
     addq.l #2,a0                        ; move source to next bitplane
