@@ -10,7 +10,7 @@
 
 _sprite_render_inner_draw:
     move.l a7,a0
-    movem.l a2-a6,-(sp)
+    movem.l a2-a6/d2,-(sp)
 
     ; a0(4) = source
     ; a0(8) = destination
@@ -28,25 +28,28 @@ _sprite_render_inner_draw:
 
     ; first generate shifted mask data for 16 lines
 
+    moveq.l #2,d2
+
     lea $ffff8a20.w,a3
-    move.w #2,(a3)+                ; srcxinc 8a20
-    move.w #0,(a3)+                ; srcyinc 8a22
+    move.w d2,(a3)+                ; srcxinc 8a20
+    clr.w (a3)+                ; srcyinc 8a22
     move.l a0,(a3)+                ; source address 8a24
     moveq.l #-1,d1
     move.w d1,(a3)+            ; endmask1 8a28
     move.w d1,(a3)+            ; endmask2 8a2a
     move.w d1,(a3)+            ; endmask3 8a2c
-    move.w #2,(a3)+                ; destxinc 8a2e
-    move.w #2,(a3)+                ; destyinc 8a30
+    move.w d2,(a3)+                ; destxinc 8a2e
+    move.w d2,(a3)+                ; destyinc 8a30
     lea .shifted_buffer,a2               ; get dest buffer address
     move.l a2,(a3)+                ; dest 8a32
-    move.w #2,(a3)+                ; xcount 8a36
+    move.w d2,(a3)+                ; xcount 8a36
     move.w #16,(a3)+                   ; ycount 8a38
     move.w #$020c,(a3)+            ; hop/op 8a3a
     move.b d0,d1                         ; copy skew to d1
     or.b #$80,d1                         ; apply fsxr
     move.b d1,1(a3)                ; skew/fxsr register
-    move.b #$c0,(a3)              ; control
+    move.w #$c0,d1
+    move.b d1,(a3)              ; control
 
     ; a2 still contains shifted buffer address
     ; now draw the mask
@@ -71,7 +74,7 @@ _sprite_render_inner_draw:
     ; time for the colour pass
 
     lea $ffff8a20.w,a3
-    move.w #0,(a3)+                              ; source x increment 8a20
+    clr.w #0,(a3)+                              ; source x increment 8a20
     move.w #8,(a3)+                             ; source y increment 8a22
     ; source 8a24 set per pass
     move.b d0,$ffff8a3d.w
@@ -146,7 +149,6 @@ _sprite_render_inner_draw:
     lea $ffff8a38.w,a4
     lea $ffff8a3c.w,a5
     move.w #16,d0
-    move.w #$c0,d1
 
 ;.foo
 ;    bra.s .foo
@@ -163,7 +165,7 @@ _sprite_render_inner_draw:
     drawplane
 
 .alldone
-    movem.l (sp)+,a2-a6
+    movem.l (sp)+,a2-a6/d2
     rts
 
 _sprite_render_inner_erase:
