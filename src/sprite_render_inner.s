@@ -24,7 +24,6 @@ _sprite_render_inner_draw:
     move.w 12+2(a0),d0                           ; skew
     move.l 8(a0),a1                              ; dest address 8a32
     move.l 4(a0),a0                              ; source address 8a24
-    addq.l #2,a0
 
     move.b d0,$ffff8a3d.w
     tst.w d0
@@ -40,17 +39,62 @@ _sprite_render_inner_draw:
     ; that's 2 words of mask data per line
     ; x increment
 
-
     ; 16 pixel wide sprite is 1 word of mask data per line
     ; when shifted, this expands into 2 words
+    ; we need to write 32 words
+    ; - that's 2 words of mask data for 16 lines
 
     ; source = 0(sprite data)
     ; dest = shifted_buffer+2
     ; skew = skew
+    ; hop/op = 0203 (copy)
     ; repeat 16 times:
-    ; - copy two words, skip destination word
-    ; srcxinc = 2
-    ; srcyinc
+    ; read one word, but with fxsr enabled
+    ;
+    ; incoming data format:
+    ; one word of all zeroes
+    ; mask word
+    ; one word of all zeroes
+    ; mask word
+    ; ...
+    ; 
+    ; do we need fxsr? I think we do, in order to "prime" the source buffer
+    ;
+    ; write two words
+    ; srcxinc = 2 (needs to be adjusted due to fxsr?)
+    ; srcyinc = 0 (?)
+    ; dstxinc = 2
+    ; dstyinc = 0 (?)
+    ; xcount = 1
+    ; ycount = 16
+
+    ; read word from source
+
+    move.w #2,$ffff8a20.w                ; srcxinc
+    move.w #0,$ffff8a22.w                ; srcyinc
+    move.l a0,$ffff8a24.w                ; source address
+    move.w #$ffff,$ffff8a28.w            ; endmask1
+    move.w #$ffff,$ffff8a2a.w            ; endmask2
+    move.w #$ffff,$ffff8a2c.w            ; endmask3
+    move.w #2,$ffff8a2e.w                ; destxinc
+    move.w #2,$ffff8a30.w                ; destyinc
+    lea .shifted_buffer,a2               ; get dest buffer address
+    move.l a2,$ffff8a32.w                ; write dest buffer
+    move.w #2,$ffff8a36.w                ; xcount
+    move.w #$0203,$ffff8a3a.w            ; hop/op
+
+    ;move.w #0,d0 ; TEMP DISABLE SKEW
+    move.b d0,d1                         ; copy skew to d1
+    or.b #$80,d1                         ; apply fsxr
+    move.b d1,$ffff8a3d.w                ; skew/fxsr register
+
+;.foo
+;    bra.s .foo
+
+    rept 16
+    move.w #1,$ffff8a38.w               ; ycount
+    move.b #$c0,$ffff8a3c.w              ; control
+    endr
 
 
     add.w d0,d0
