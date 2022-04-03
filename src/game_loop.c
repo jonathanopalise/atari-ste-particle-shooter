@@ -37,7 +37,6 @@ void game_loop()
         sprite_render_erase_sprites();
         *((volatile uint16_t *)0xffff8240) = 0x004; // blue
         particle_render_draw_particles();
-        *((volatile uint16_t *)0xffff8240) = 0x404; // purple
         sprite_render_draw_sprites();
 
         *((volatile uint16_t *)0xffff8240) = 0x000;
