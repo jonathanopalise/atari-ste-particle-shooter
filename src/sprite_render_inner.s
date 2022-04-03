@@ -28,25 +28,26 @@ _sprite_render_inner_draw:
 
     ; first generate shifted mask data for 16 lines
 
-    lea $ffff8a20.w,a3
-    move.w #2,(a3)+                ; srcxinc 8a20
-    move.w #0,(a3)+                ; srcyinc 8a22
-    move.l a0,(a3)+                ; source address 8a24
-    moveq.l #-1,d1
-    move.w d1,(a3)+            ; endmask1 8a28
-    move.w d1,(a3)+            ; endmask2 8a2a
-    move.w d1,(a3)+            ; endmask3 8a2c
-    move.w #2,(a3)+                ; destxinc 8a2e
-    move.w #2,(a3)+                ; destyinc 8a30
+    move.w #2,$ffff8a20.w                ; srcxinc
+    move.w #0,$ffff8a22.w                ; srcyinc
+    move.l a0,$ffff8a24.w                ; source address
+    move.w #$ffff,$ffff8a28.w            ; endmask1
+    move.w #$ffff,$ffff8a2a.w            ; endmask2
+    move.w #$ffff,$ffff8a2c.w            ; endmask3
+    move.w #2,$ffff8a2e.w                ; destxinc
+    move.w #2,$ffff8a30.w                ; destyinc
     lea .shifted_buffer,a2               ; get dest buffer address
-    move.l a2,(a3)+                ; dest 8a32
-    move.w #2,(a3)+                ; xcount 8a36
-    move.w #16,(a3)+                   ; ycount 8a38
-    move.w #$020c,(a3)+            ; hop/op 8a3a
+    move.l a2,$ffff8a32.w                ; write dest buffer
+    move.w #2,$ffff8a36.w                ; xcount
+    move.w #$020c,$ffff8a3a.w            ; hop/op
+
     move.b d0,d1                         ; copy skew to d1
     or.b #$80,d1                         ; apply fsxr
-    move.b d1,1(a3)                ; skew/fxsr register
-    move.b #$c0,(a3)              ; control
+    move.b d1,$ffff8a3d.w                ; skew/fxsr register
+
+    move.w #2,$ffff8a36.w                ; xcount
+    move.w #16,$ffff8a38.w               ; ycount
+    move.b #$c0,$ffff8a3c.w              ; control
 
     ; a2 still contains shifted buffer address
     ; now draw the mask
