@@ -1,7 +1,6 @@
 #include "inttypes.h"
 #include "sprite_system.h"
 #include "mine_sprite.h"
-#include "explosion_sprite.h"
 
 void mine_sprite_init_attributes(struct Sprite *sprite)
 {

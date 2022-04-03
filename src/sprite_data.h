@@ -3,6 +3,6 @@
 
 #include <inttypes.h>
 
-extern uint8_t sprite_data[][226];
+extern uint8_t sprite_data[][192];
 
 #endif
