@@ -96,7 +96,7 @@ if (!file_exists($inputFilename)) {
 $spriteSheetBitmap = IndexedBitmap::loadGif($inputFilename);
 ob_start();
 echo("#include \"../sprite_data.h\"\n");
-echo("uint8_t sprite_data[][194] = {\n");
+echo("uint8_t sprite_data[][226] = {\n");
 
 foreach ($spriteDefinitions as $key => $spriteDefinition) {
     $indexedBitmap = $spriteSheetBitmap->extractRegionToIndexedBitmap(
