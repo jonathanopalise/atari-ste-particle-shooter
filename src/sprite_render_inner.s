@@ -73,7 +73,7 @@ _sprite_render_inner_draw:
 
     lea $ffff8a20.w,a3
     move.w #0,(a3)+                              ; source x increment 8a20
-    move.w #8,(a3)+                             ; source y increment 8a22
+    move.w #10,(a3)+                             ; source y increment 8a22
     ; source 8a24 set per pass
     move.b d0,$ffff8a3d.w
     add.w d0,d0
