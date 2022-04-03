@@ -9,6 +9,7 @@ _initialise:
 
     move.l #vbl,$70.w       ; Install our own VBL
     move.l #dummy,$68.w     ; Install our own HBL (dummy)
+    move.l #dummy,$120.w    ; Install our own Timer B (dummy)
     move.l #dummy,$134.w    ; Install our own Timer A (dummy)
     move.l #dummy,$114.w    ; Install our own Timer C (dummy)
     move.l #dummy,$110.w    ; Install our own Timer D (dummy)
