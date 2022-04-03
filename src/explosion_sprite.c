@@ -12,6 +12,7 @@ struct ExplosionSpawnParams {
     int32_t precision_world_yoffset;
     int32_t precision_world_xadd;
     int32_t precision_world_yadd;
+    uint16_t time_to_live;
 };
 
 struct ExplosionSpriteAttributes {
@@ -28,6 +29,7 @@ void explosion_sprite_init_type()
         explosion_spawn_params[index].precision_world_yoffset = (6 << 16) + random() % (4 << 16);
         explosion_spawn_params[index].precision_world_xadd = (random() % 80000);
         explosion_spawn_params[index].precision_world_yadd = -(random() % 80000);
+        explosion_spawn_params[index].time_to_live = 48 + random() % 16;
     }
 
     current_explosion_spawn_params_offset = 0;
@@ -52,6 +54,7 @@ void explosion_sprite_init_attributes(struct Sprite *sprite)
             sprite->precision_world_ypos + current_explosion_spawn_params->precision_world_yoffset,
             current_explosion_spawn_params->precision_world_xadd,
             current_explosion_spawn_params->precision_world_yadd,
+            current_explosion_spawn_params->time_to_live,
             PARTICLE_TYPE_GENERIC
         );
 

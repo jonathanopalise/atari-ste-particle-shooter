@@ -28,6 +28,7 @@ void particle_system_spawn(
     int32_t precision_world_ypos,
     int32_t precision_world_xadd,
     int32_t precision_world_yadd,
+    uint16_t time_to_live,
     uint16_t type
 );
 

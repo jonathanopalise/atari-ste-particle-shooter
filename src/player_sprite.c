@@ -80,6 +80,7 @@ static void player_sprite_fire_bullet(struct Sprite *sprite)
         sprite->precision_world_ypos + (8 << 16),
         (1 << 16) *4,
         0,
+        63,
         PARTICLE_TYPE_PLAYER_BULLET
     );
 }
@@ -91,6 +92,7 @@ static void player_sprite_spawn_exhaust_particles(struct Sprite *sprite)
         sprite->precision_world_ypos + (6 << 16) + random() % (4 << 16),
         -(48000 + random() % 16000),
         (random() % 24000) - 12000,
+        (random() % 14) + 50,
         PARTICLE_TYPE_PLAYER_EXHAUST
     );
 }
