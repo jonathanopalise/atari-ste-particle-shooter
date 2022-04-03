@@ -1,5 +1,6 @@
 #include "game_loop.h"
 #include "hardware_playfield.h"
+#include "hardware_viewport.h"
 #include "initialise.h"
 #include "logical_viewport.h"
 #include "particle_render.h"
@@ -43,6 +44,8 @@ void game_loop()
 
         waiting_for_vbl = 1;
         while (waiting_for_vbl) {}
+        hardware_playfield_handle_vbl();
+        hardware_viewport_handle_vbl();
 
         *((volatile uint16_t *)0xffff8240) = 0x400; // red
 

@@ -78,28 +78,5 @@ void sprite_render_erase_sprites()
         hardware_playfield_restore_buffer,
         hidden_hardware_playfield->buffer
     );
-
-    /*uint32_t buffer_difference = hidden_hardware_playfield->buffer - hardware_playfield_restore_buffer;
-    struct SpriteDrawRecord *current_sprite_draw_record = hidden_hardware_playfield->sprite_draw_records;
-    uint16_t x;
-    uint16_t y;
-
-    for (int index = hidden_hardware_playfield->sprites_drawn; index > 0; index--) {
-        uint8_t dest_pointer = *current_sprite_draw_record->draw_pointer;
-        uint8_t source_pointer = dest_pointer + buffer_difference;
-
-        for (y = 0; y < 15; y++) {
-            for (x = 0; x < 2; x++) {
-                *((uint32_t *)dest_pointer) = *((uint32_t *)source_pointer);
-                source_pointer += 4;
-                dest_pointer += 4;
-                *((uint32_t *)dest_pointer) = *((uint32_t *)source_pointer);
-            }
-            source_pointer += (480-8);
-            dest_pointer += (480-8);
-        }
-
-        current_sprite_draw_record++;
-    }*/
 }
 
