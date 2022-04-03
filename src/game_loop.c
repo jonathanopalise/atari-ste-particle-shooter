@@ -18,12 +18,10 @@ void game_loop()
     initialise();
     logical_viewport_left_xpos = 0;
 
-
     while (1) {
-
         // this shouldn't be here but it doesn't like being above
         if (logical_viewport_left_xpos == 1) {
-            sprite_system_spawn(160 << 16, 100 << 16, SPRITE_TYPE_PLAYER);
+            sprite_system_spawn(160 << 16, 100 << 16, SPRITE_BEHAVIOUR_PLAYER, SPRITE_PATH_NONE);
         }
 
         sprite_system_manage_waves();

@@ -3,6 +3,7 @@
 #include <inttypes.h>
 #include "logical_viewport.h"
 #include "sprite_behaviour.h"
+#include "sprite_path.h"
 #include "sprite_system.h"
 #include "sprite_common.h"
 #include "hardware_playfield.h"
@@ -37,14 +38,17 @@ void sprite_system_update_system()
 {
     struct Sprite *current_sprite = first_active_sprite;
     struct SpriteBehaviour *sprite_behaviour;
+    struct SpritePath *sprite_path;
 
     // TODO: deduplicate: these also exist in particle system
     int32_t precision_logical_viewport_left_xpos = logical_viewport_left_xpos << 16;
     int32_t precision_logical_viewport_right_xpos = precision_logical_viewport_left_xpos + (VIEWPORT_WIDTH << 16);
 
     while (current_sprite) {
-        sprite_behaviour = &sprite_behaviours[current_sprite->type];
+        sprite_behaviour = &sprite_behaviours[current_sprite->behaviour_index];
         sprite_behaviour->update_attributes(current_sprite);
+        sprite_path = &sprite_paths[current_sprite->path_index];
+        sprite_path->update_position(current_sprite);
 
         if (current_sprite->active) {
             if ((current_sprite->precision_world_ypos < (0 - (SPRITE_HEIGHT << 16))) || 
@@ -88,19 +92,31 @@ void sprite_system_update_free_list()
 
 void sprite_system_manage_waves()
 {
+    // need a number of struct WaveEvent objects
+    // each specifying:
+    // - ticks until this event
+    // - sprite type index (e.g mine) - determines appearance/animation
+    // - initial xpos/ypos
+    // - sprite instance path index
+
     int32_t precision_logical_viewport_left_xpos = logical_viewport_left_xpos << 16;
 
     if ((logical_viewport_left_xpos & 63) == 63) {
         sprite_system_spawn(
             precision_logical_viewport_left_xpos + (VIEWPORT_WIDTH << 16),
             random() % ((VIEWPORT_HEIGHT - 16) << 16),
-            SPRITE_TYPE_MINE
+            SPRITE_BEHAVIOUR_MINE,
+            SPRITE_PATH_TYPE_1
         );
     }
 }
 
-void sprite_system_spawn(int32_t precision_world_xpos, int32_t precision_world_ypos, uint16_t type)
-{
+void sprite_system_spawn(
+    int32_t precision_world_xpos,
+    int32_t precision_world_ypos,
+    uint16_t behaviour_index,
+    uint16_t path_index
+) {
     struct Sprite *new_sprite;
     struct Sprite *tmp_sprite;
 
@@ -116,11 +132,12 @@ void sprite_system_spawn(int32_t precision_world_xpos, int32_t precision_world_y
 
         new_sprite->precision_world_xpos = precision_world_xpos;
         new_sprite->precision_world_ypos = precision_world_ypos;
-        new_sprite->type = type;
+        new_sprite->behaviour_index = behaviour_index;
+        new_sprite->path_index = path_index;
         new_sprite->active = 1;
         new_sprite->has_been_visible_since_spawn = 0;
 
-        sprite_behaviours[type].init_attributes(new_sprite);
+        sprite_behaviours[behaviour_index].init_attributes(new_sprite);
     }
 }
 

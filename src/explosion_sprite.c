@@ -40,6 +40,9 @@ void explosion_sprite_init_attributes(struct Sprite *sprite)
     struct ExplosionSpriteAttributes *explosion_sprite_attributes;
     struct ExplosionSpawnParams *current_explosion_spawn_params;
 
+    sprite->behaviour_index = SPRITE_BEHAVIOUR_EXPLOSION;
+    sprite->path_index = SPRITE_PATH_NONE;
+
     explosion_sprite_attributes = (struct ExplosionSpriteAttributes *)sprite->additional_data;
     explosion_sprite_attributes->current_animation_frame = 0;
     explosion_sprite_attributes->frames_until_next_animation_frame = EXPLOSION_FRAME_INTERVAL;

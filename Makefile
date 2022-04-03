@@ -23,6 +23,7 @@ OBJECT_FILES =\
 	src/mine_sprite.o\
 	src/explosion_sprite.o\
 	src/sprite_behaviour.o\
+	src/sprite_path.o\
 	src/sprite_system.o\
 	src/sprite_render.o\
 	src/sprite_render_inner.o\
@@ -74,6 +75,9 @@ src/explosion_sprite.o: src/explosion_sprite.c src/explosion_sprite.h
 
 src/sprite_behaviour.o: src/sprite_behaviour.c src/sprite_behaviour.h
 	$(CC) $(CFLAGS) -c src/sprite_behaviour.c -o src/sprite_behaviour.o
+
+src/sprite_path.o: src/sprite_path.c src/sprite_path.h
+	$(CC) $(CFLAGS) -c src/sprite_path.c -o src/sprite_path.o
 
 src/sprite_system.o: src/sprite_system.c src/sprite_system.h
 	$(CC) $(CFLAGS) -c src/sprite_system.c -o src/sprite_system.o

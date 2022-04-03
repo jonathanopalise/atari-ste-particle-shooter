@@ -32,7 +32,7 @@ void collision_detection_handle_player_bullet_collisions()
     while (current_sprite) {
         if (current_sprite->active) {
             // TODO: this is likely to be really slow - examine further!
-            if (sprite_behaviours[current_sprite->type].handle_player_bullet_collision) {
+            if (sprite_behaviours[current_sprite->behaviour_index].handle_player_bullet_collision) {
                 *current_collidable_sprite_ptr = current_sprite;
                 current_collidable_sprite_ptr++;
             }
@@ -53,7 +53,7 @@ void collision_detection_handle_player_bullet_collisions()
                     (current_collidable_particle->precision_world_ypos > current_collidable_sprite->precision_world_ypos) &&
                     (current_collidable_particle->precision_world_ypos < (current_collidable_sprite->precision_world_ypos + (SPRITE_HEIGHT << 16)))
                 ) {
-                    sprite_behaviours[current_collidable_sprite->type].handle_player_bullet_collision(current_collidable_sprite);
+                    sprite_behaviours[current_collidable_sprite->behaviour_index].handle_player_bullet_collision(current_collidable_sprite);
                     current_collidable_particle->active = 0;
                 }
             }
