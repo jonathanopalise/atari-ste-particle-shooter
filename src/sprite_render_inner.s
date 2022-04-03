@@ -18,41 +18,18 @@ _sprite_render_inner_draw:
 
     lea $ffff8a20.w,a3
     move.w #0,(a3)+                              ; source x increment 8a20
-    move.w #12,(a3)+                             ; source y increment 8a22
+    move.w #10,(a3)+                             ; source y increment 8a22
     move.w #8,$ffff8a2e.w                        ; dest x increment 8a2e 
 
     move.w 12+2(a0),d0                           ; skew
     move.l 8(a0),a1                              ; dest address 8a32
     move.l 4(a0),a0                              ; source address 8a24
-    addq.l #2,a0
 
     move.b d0,$ffff8a3d.w
     tst.w d0
     beq .lines_of_16_pixels
 
-.lines_of_32_pixels:
-
     ; 32 pixels size handling
-
-    ; so data format is as follows:
-    ; 1 word of mask data
-    ; 4 words of colour data
-    ; that's 2 words of mask data per line
-    ; x increment
-
-
-    ; 16 pixel wide sprite is 1 word of mask data per line
-    ; when shifted, this expands into 2 words
-
-    ; source = 0(sprite data)
-    ; dest = shifted_buffer+2
-    ; skew = skew
-    ; repeat 16 times:
-    ; - copy two words, skip destination word
-    ; srcxinc = 2
-    ; srcyinc
-
-
     add.w d0,d0
     move.w .leftendmasks(pc,d0),$ffff8a28.w      ; endmask1
     move.w .rightendmasks(pc,d0),$ffff8a2c.w     ; endmask3
@@ -61,9 +38,6 @@ _sprite_render_inner_draw:
     or.b #$40,$ffff8a3d.w                        ; nfsr
 
     bra .after_size
-
-.shifted_buffer:
-    ds.w 32 ; 1 empty word plus two mask words
 
 .leftendmasks:
 

@@ -96,7 +96,7 @@ if (!file_exists($inputFilename)) {
 $spriteSheetBitmap = IndexedBitmap::loadGif($inputFilename);
 ob_start();
 echo("#include \"../sprite_data.h\"\n");
-echo("uint8_t sprite_data[][192] = {\n");
+echo("uint8_t sprite_data[][160] = {\n");
 
 foreach ($spriteDefinitions as $key => $spriteDefinition) {
     $indexedBitmap = $spriteSheetBitmap->extractRegionToIndexedBitmap(
@@ -110,31 +110,6 @@ foreach ($spriteDefinitions as $key => $spriteDefinition) {
     $unmaskedSprite = SpriteConvertor::createMaskedSprite($indexedBitmap);
     $planarData = $unmaskedSprite->exportToPlanarData();
     $bytes = $planarData->getBytes();
-
-    $chunkedBytes = array_chunk($bytes, 10);
-
-    $bytes = [];
-    foreach ($chunkedBytes as $chunk) {
-        $modifiedChunk = [
-            0,
-            0,
-            $chunk[0],
-            $chunk[1],
-            $chunk[2],
-            $chunk[3],
-            $chunk[4],
-            $chunk[5],
-            $chunk[6],
-            $chunk[7],
-            $chunk[8],
-            $chunk[9],
-        ];
-
-        $bytes = array_merge(
-            $bytes,
-            $modifiedChunk
-        );
-    }
 
     echo("    {".implode(',',$bytes)."}");
     if ($key != array_key_last($spriteDefinitions)) {
