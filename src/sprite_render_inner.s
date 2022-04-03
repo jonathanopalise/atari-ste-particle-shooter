@@ -31,7 +31,44 @@ _sprite_render_inner_draw:
 
 .lines_of_32_pixels:
 
-    ; first generate shifted mask data for 16 lines
+    ; 32 pixels size handling
+
+    ; so data format is as follows:
+    ; 1 word of mask data
+    ; 4 words of colour data
+    ; that's 2 words of mask data per line
+    ; x increment
+
+    ; 16 pixel wide sprite is 1 word of mask data per line
+    ; when shifted, this expands into 2 words
+    ; we need to write 32 words
+    ; - that's 2 words of mask data for 16 lines
+
+    ; source = 0(sprite data)
+    ; dest = shifted_buffer+2
+    ; skew = skew
+    ; hop/op = 0203 (copy)
+    ; repeat 16 times:
+    ; read one word, but with fxsr enabled
+    ;
+    ; incoming data format:
+    ; one word of all zeroes
+    ; mask word
+    ; one word of all zeroes
+    ; mask word
+    ; ...
+    ; 
+    ; do we need fxsr? I think we do, in order to "prime" the source buffer
+    ;
+    ; write two words
+    ; srcxinc = 2 (needs to be adjusted due to fxsr?)
+    ; srcyinc = 0 (?)
+    ; dstxinc = 2
+    ; dstyinc = 0 (?)
+    ; xcount = 1
+    ; ycount = 16
+
+    ; read word from source
 
     move.w #2,$ffff8a20.w                ; srcxinc
     move.w #0,$ffff8a22.w                ; srcyinc
@@ -44,40 +81,20 @@ _sprite_render_inner_draw:
     lea .shifted_buffer,a2               ; get dest buffer address
     move.l a2,$ffff8a32.w                ; write dest buffer
     move.w #2,$ffff8a36.w                ; xcount
-    move.w #$020c,$ffff8a3a.w            ; hop/op
+    move.w #$0203,$ffff8a3a.w            ; hop/op
 
+    ;move.w #0,d0 ; TEMP DISABLE SKEW
     move.b d0,d1                         ; copy skew to d1
-    ;move.b #13,d1 ;HARDCODE SKEW TO 14 for TESTING
     or.b #$80,d1                         ; apply fsxr
     move.b d1,$ffff8a3d.w                ; skew/fxsr register
 
-    move.w #2,$ffff8a36.w                ; xcount
+;.foo
+;    bra.s .foo
+
     rept 16
     move.w #1,$ffff8a38.w               ; ycount
     move.b #$c0,$ffff8a3c.w              ; control
     endr
-
-    ; a2 still contains shifted buffer address
-    ; now draw the mask
-    move.w #8,$ffff8a2e.w                ; destxinc
-    move.w #-6,$ffff8a30.w                ; destyinc
-    move.w #0,$ffff8a3a.w               ; hop/op
-    move.w #2,$ffff8a36.w                ; xcount
-    move.b #0,$ffff8a3d.w                ; skew/fxsr register
-
-    rept 16
-    move.w (a2)+,$ffff8a28.w             ; endmask1
-    move.w (a2)+,$ffff8a2c.w             ; endmask3
-    move.w #4,$ffff8a38.w               ; ycount
-    move.l a1,$ffff8a32.w                ; dest address
-    move.b #$c0,$ffff8a3c.w              ; control
-    lea 480(a1),a1 
-    endr
-
-    bra .alldone
-
-    ; reset a1 to original position
-    lea -480*16(a1),a1
 
 
     add.w d0,d0
@@ -172,7 +189,6 @@ _sprite_render_inner_draw:
     addq.l #2,a0                        ; move source to next bitplane
     drawplane
 
-.alldone
     movem.l (sp)+,a2-a6
     rts
 
