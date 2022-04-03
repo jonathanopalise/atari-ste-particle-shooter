@@ -29,6 +29,7 @@
 
 #define SPRITE_PATH_NONE 0
 #define SPRITE_PATH_TYPE_1 1
+#define SPRITE_PATH_TYPE_2 2
 
 struct Sprite {
 	int32_t precision_world_xpos;

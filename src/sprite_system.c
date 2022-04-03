@@ -45,6 +45,7 @@ void sprite_system_update_system()
     int32_t precision_logical_viewport_right_xpos = precision_logical_viewport_left_xpos + (VIEWPORT_WIDTH << 16);
 
     while (current_sprite) {
+        current_sprite->frames_alive++;
         sprite_behaviour = &sprite_behaviours[current_sprite->behaviour_index];
         sprite_behaviour->update_attributes(current_sprite);
         sprite_path = &sprite_paths[current_sprite->path_index];
@@ -102,11 +103,17 @@ void sprite_system_manage_waves()
     int32_t precision_logical_viewport_left_xpos = logical_viewport_left_xpos << 16;
 
     if ((logical_viewport_left_xpos & 63) == 63) {
-        sprite_system_spawn(
+        /*sprite_system_spawn(
             precision_logical_viewport_left_xpos + (VIEWPORT_WIDTH << 16),
             random() % ((VIEWPORT_HEIGHT - 16) << 16),
             SPRITE_BEHAVIOUR_MINE,
             SPRITE_PATH_TYPE_1
+        );*/
+        sprite_system_spawn(
+            precision_logical_viewport_left_xpos + (VIEWPORT_WIDTH << 16),
+            20 << 16,
+            SPRITE_BEHAVIOUR_MINE,
+            SPRITE_PATH_TYPE_2
         );
     }
 }
@@ -136,6 +143,7 @@ void sprite_system_spawn(
         new_sprite->path_index = path_index;
         new_sprite->active = 1;
         new_sprite->has_been_visible_since_spawn = 0;
+        new_sprite->frames_alive = 0;
 
         sprite_behaviours[behaviour_index].init_attributes(new_sprite);
     }

@@ -34,7 +34,7 @@ void sprite_render_draw_sprites()
         logical_viewport_sprite_ypos = current_sprite->precision_world_ypos >> 16;
 
         if (logical_viewport_sprite_ypos >= 0 &&
-            logical_viewport_sprite_ypos < VIEWPORT_HEIGHT &&
+            logical_viewport_sprite_ypos < (VIEWPORT_HEIGHT - 16) &&
             logical_viewport_sprite_xpos >= logical_viewport_left_xpos &&
             logical_viewport_sprite_ypos <= logical_viewport_right_xpos
         ) {
