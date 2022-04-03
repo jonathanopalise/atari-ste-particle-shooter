@@ -16,7 +16,7 @@ struct Sprite *current_collidable_sprite;
 
 void collision_detection_handle_player_bullet_collisions()
 {
-    current_collidable_particle_ptr = collidable_particle_ptrs;
+    /*current_collidable_particle_ptr = collidable_particle_ptrs;
     struct Particle *current_particle = first_active_particle;
     while (current_particle) {
         if (current_particle->active && current_particle->type == PARTICLE_TYPE_PLAYER_BULLET) {
@@ -25,7 +25,7 @@ void collision_detection_handle_player_bullet_collisions()
         }
         current_particle = current_particle->next;
     }
-    *current_collidable_particle_ptr = NULL;
+    *current_collidable_particle_ptr = NULL;*/
 
     current_collidable_sprite_ptr = collidable_sprite_ptrs;
     struct Sprite *current_sprite = first_active_sprite;

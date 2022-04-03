@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <inttypes.h>
+#include "collision_detection.h"
 #include "logical_viewport.h"
 #include "particle_system.h"
 #include "particle_common.h"
@@ -34,6 +35,8 @@ void particle_system_update_system()
     int32_t precision_logical_viewport_left_xpos = logical_viewport_left_xpos << 16;
     int32_t precision_logical_viewport_right_xpos = precision_logical_viewport_left_xpos + (VIEWPORT_WIDTH << 16);
 
+    current_collidable_particle_ptr = collidable_particle_ptrs;
+
     while (current_particle) {
         current_particle->time_to_live--;
         if (current_particle->time_to_live == 0) {
@@ -52,10 +55,17 @@ void particle_system_update_system()
                     current_particle->active = 0;
                 }
             }
+
+            if (current_particle->active && current_particle->type == PARTICLE_TYPE_PLAYER_BULLET) {
+                *current_collidable_particle_ptr = current_particle;
+                current_collidable_particle_ptr++;
+            }
         }
 
         current_particle = current_particle->next;
     }
+
+    *current_collidable_particle_ptr = NULL;
 }
 
 void particle_system_update_free_list()
