@@ -44,7 +44,7 @@ void explosion_sprite_init_attributes(struct Sprite *sprite)
 
     sprite->image_index = SPRITE_IMAGE_EXPLOSION_1;
 
-    for (uint16_t index = 0; index < 25; index++) {
+    for (uint16_t index = 20; index > 0; index--) {
         current_explosion_spawn_params = &explosion_spawn_params[current_explosion_spawn_params_offset];
 
         particle_system_spawn(
