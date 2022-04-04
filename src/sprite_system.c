@@ -102,7 +102,7 @@ void sprite_system_manage_waves()
 
     int32_t precision_logical_viewport_left_xpos = logical_viewport_left_xpos << 16;
 
-    if ((logical_viewport_left_xpos & 63) == 63) {
+    if ((logical_viewport_left_xpos & 31) == 31) {
         /*sprite_system_spawn(
             precision_logical_viewport_left_xpos + (VIEWPORT_WIDTH << 16),
             random() % ((VIEWPORT_HEIGHT - 16) << 16),
@@ -111,7 +111,7 @@ void sprite_system_manage_waves()
         );*/
         sprite_system_spawn(
             precision_logical_viewport_left_xpos + (VIEWPORT_WIDTH << 16),
-            20 << 16,
+            60 << 16,
             SPRITE_BEHAVIOUR_MINE,
             SPRITE_PATH_TYPE_2
         );

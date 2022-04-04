@@ -32,11 +32,16 @@ void sprite_path_2_update_position(struct Sprite *sprite)
 {
     uint16_t sin_cos_index;
 
-    if (sprite->frames_alive >= 64 && sprite->frames_alive < (64+256)) {
-        sin_cos_index = (sprite->frames_alive - 64);
-        sprite->precision_world_xpos += cos_table[sin_cos_index];
-        sprite->precision_world_ypos += sin_table[sin_cos_index];
+    // need this
+    sprite->precision_world_xpos += (1<<16);
+
+    if (sprite->frames_alive >= 96 && sprite->frames_alive < (96+128)) {
+        // this will give us a number in the range of 0-127
+        sin_cos_index = (sprite->frames_alive - 96) << 1;
+        sprite->precision_world_xpos -= cos_table[sin_cos_index] << 1;
+        sprite->precision_world_ypos += sin_table[sin_cos_index] << 1;
     } else {
-        sprite->precision_world_xpos += (1<<16)/2;
+        sprite->precision_world_xpos -= cos_table[0] << 1;
+        sprite->precision_world_ypos += sin_table[0] << 1;
     }
 }
