@@ -28,6 +28,7 @@ _particle_render_draw_particles_inner:
     move.w 10(a0),d3 ; d3 = hardware viewport left xpos
     move.l 12(a0),a2 ; a2 = current particle draw pointer
     move.l 16(a0),a0 ; a0 = hardware_playfield_buffer
+    move.l a0,usp
     move.w _logical_viewport_left_xpos,d4 ; d4 = logical viewport left xpos
     lea _hardware_playfield_ypos_lookup,a4
     lea _hardware_viewport_xpos_lookup,a5
@@ -45,7 +46,6 @@ _particle_render_draw_particles_inner:
     ; logical_viewport_particle_ypos (d2) =
     ; current_particle->precision_world_xpos >> 16 (because of +2)
     move.w PRECISION_WORLD_YPOS_OFS(a3),d2
-    tst.w d2
     blt.s .next_particle ; if above top of screen, move to next particle
 
     ; logical_viewport_particle_xpos (d5) =
@@ -89,7 +89,7 @@ _particle_render_draw_particles_inner:
     ; WE CANNOT REUSE A3!
     ; calculate hardware_playfield_particle_ptr
 
-    move.l a0,a1
+    move.l usp,a1
     add.l d2,a1
 
     ; a1 now contains hardware_playfield_particle_ptr
@@ -106,17 +106,17 @@ _particle_render_draw_particles_inner:
     add.w d2,d5
 
     ; we need the or_table in an address register!
-    move.l a3,usp
-    move.l d7,a3
+    ;move.l a3,usp
+    move.l d7,a0
 
     ; this is the movep plot pixel code
     movep.l 0(a1),d1  ; get pixel
-    and.l (a3,d2.w),d1   ; apply AND
-    or.l (a3,d5.w),d1   ; apply OR in WHITE
+    and.l (a0,d2.w),d1   ; apply AND
+    or.l (a0,d5.w),d1   ; apply OR in WHITE
     movep.l d1,0(a1)  ; write back
 
     ; restore address
-    move.l usp,a3
+    ;move.l usp,a3
 
     ; now do the current particle draw pointer
     move.l a1,(a2)+

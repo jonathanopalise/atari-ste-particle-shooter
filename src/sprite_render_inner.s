@@ -15,7 +15,7 @@ _sprite_render_inner_draw:
     ; a0(4) = source
     ; a0(8) = destination
     ; a0(12+2) = skew (ignore for now, assume 0)
-
+ 
     lea $ffff8a20.w,a3
     move.w #0,(a3)+                              ; source x increment 8a20
     move.w #10,(a3)+                             ; source y increment 8a22
@@ -97,7 +97,7 @@ _sprite_render_inner_draw:
     move.w #$201,$ffff8a3a.w            ; hop/op: read from source, source & destination
 
     ; ycount = 16
-    xcount = 1
+    ; xcount = 1
 
     drawplane
     addq.l #2,a1                        ; move to next bitplane
