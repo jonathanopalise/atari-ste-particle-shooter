@@ -14,5 +14,8 @@ void sprite_path_1_update_position(struct Sprite *sprite);
 void sprite_path_2_update_position(struct Sprite *sprite);
 void sprite_path_3_update_position(struct Sprite *sprite);
 void sprite_path_4_update_position(struct Sprite *sprite);
+void sprite_path_5_update_position(struct Sprite *sprite);
+
+
 
 #endif

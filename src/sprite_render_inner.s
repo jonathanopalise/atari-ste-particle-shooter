@@ -96,6 +96,9 @@ _sprite_render_inner_draw:
 
     move.w #$201,$ffff8a3a.w            ; hop/op: read from source, source & destination
 
+    ; ycount = 16
+    xcount = 1
+
     drawplane
     addq.l #2,a1                        ; move to next bitplane
     drawplane

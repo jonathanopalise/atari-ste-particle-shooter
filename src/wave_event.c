@@ -130,39 +130,112 @@ struct WaveEvent wave_events[] = {
     // next
     {
         VIEWPORT_WIDTH + 16,
-        96,
+        92,
         SPRITE_BEHAVIOUR_MINE,
-        SPRITE_PATH_NONE,
+        SPRITE_PATH_TYPE_4,
         0
     },
     {
         VIEWPORT_WIDTH + 16,
-        56,
+        52,
         SPRITE_BEHAVIOUR_MINE,
-        SPRITE_PATH_NONE,
+        SPRITE_PATH_TYPE_4,
         0
     },
     {
         VIEWPORT_WIDTH + 16,
-        16,
+        12,
         SPRITE_BEHAVIOUR_MINE,
-        SPRITE_PATH_NONE,
+        SPRITE_PATH_TYPE_4,
         0
     },
     {
         VIEWPORT_WIDTH + 16,
-        136,
+        132,
         SPRITE_BEHAVIOUR_MINE,
-        SPRITE_PATH_NONE,
+        SPRITE_PATH_TYPE_4,
         0
     },
     {
         VIEWPORT_WIDTH + 16,
-        176,
+        172,
         SPRITE_BEHAVIOUR_MINE,
-        SPRITE_PATH_NONE,
-        0
+        SPRITE_PATH_TYPE_4,
+        50
     },
+
+    // next
+    {
+        VIEWPORT_WIDTH + 16,
+        42,
+        SPRITE_BEHAVIOUR_MINE,
+        SPRITE_PATH_TYPE_5,
+        20
+    },
+    {
+        VIEWPORT_WIDTH + 16,
+        142,
+        SPRITE_BEHAVIOUR_MINE,
+        SPRITE_PATH_TYPE_5,
+        20
+    },
+    {
+        VIEWPORT_WIDTH + 16,
+        42,
+        SPRITE_BEHAVIOUR_MINE,
+        SPRITE_PATH_TYPE_5,
+        20
+    },
+    {
+        VIEWPORT_WIDTH + 16,
+        142,
+        SPRITE_BEHAVIOUR_MINE,
+        SPRITE_PATH_TYPE_5,
+        20
+    },
+    {
+        VIEWPORT_WIDTH + 16,
+        42,
+        SPRITE_BEHAVIOUR_MINE,
+        SPRITE_PATH_TYPE_5,
+        20
+    },
+    {
+        VIEWPORT_WIDTH + 16,
+        142,
+        SPRITE_BEHAVIOUR_MINE,
+        SPRITE_PATH_TYPE_5,
+        20
+    },
+    {
+        VIEWPORT_WIDTH + 16,
+        42,
+        SPRITE_BEHAVIOUR_MINE,
+        SPRITE_PATH_TYPE_5,
+        20
+    },
+    {
+        VIEWPORT_WIDTH + 16,
+        142,
+        SPRITE_BEHAVIOUR_MINE,
+        SPRITE_PATH_TYPE_5,
+        20
+    },
+    {
+        VIEWPORT_WIDTH + 16,
+        42,
+        SPRITE_BEHAVIOUR_MINE,
+        SPRITE_PATH_TYPE_5,
+        20
+    },
+    {
+        VIEWPORT_WIDTH + 16,
+        142,
+        SPRITE_BEHAVIOUR_MINE,
+        SPRITE_PATH_TYPE_5,
+        20
+    },
+
 
     /*{
         VIEWPORT_WIDTH + 16,

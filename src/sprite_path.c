@@ -25,6 +25,10 @@ struct SpritePath sprite_paths[] = {
     {
         &sprite_path_4_update_position
     },
+    // type 5 - up and down
+    {
+        &sprite_path_5_update_position
+    },
 };
 
 void sprite_path_none_update_position(struct Sprite *sprite)
@@ -76,9 +80,21 @@ void sprite_path_4_update_position(struct Sprite *sprite)
     uint16_t sin_cos_index;
 
     // need this
-    sprite->precision_world_xpos += (1<<16);
+    //sprite->precision_world_xpos += (1<<16);
+
+    sin_cos_index = (sprite->frames_alive & 63) << 2;
+    sprite->precision_world_xpos -= cos_table[sin_cos_index];
+    sprite->precision_world_ypos -= sin_table[sin_cos_index];
+}
+
+void sprite_path_5_update_position(struct Sprite *sprite)
+{
+    uint16_t sin_cos_index;
+
+    // need this
+    //sprite->precision_world_xpos += (1<<16);
 
     sin_cos_index = (sprite->frames_alive & 63) << 2;
     //sprite->precision_world_xpos -= cos_table[sin_cos_index];
-    //sprite->precision_world_ypos -= sin_table[sin_cos_index];
+    sprite->precision_world_ypos -= sin_table[sin_cos_index];
 }
