@@ -21,6 +21,7 @@ struct HardwarePlayfield {
    uint16_t particles_drawn;
    struct SpriteDrawRecord sprite_draw_records[SPRITE_COUNT];
    uint16_t sprites_drawn;
+   uint8_t *ypos_pointers[HARDWARE_PLAYFIELD_HEIGHT];
 };
 
 extern struct HardwarePlayfield *hidden_hardware_playfield;

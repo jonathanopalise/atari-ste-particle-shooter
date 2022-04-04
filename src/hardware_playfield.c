@@ -46,6 +46,10 @@ static void hardware_playfield_init_playfield(struct HardwarePlayfield *hardware
 
     hardware_playfield->particles_drawn = 0;
     hardware_playfield->sprites_drawn = 0;
+
+    for (uint16_t index = 0; index<200; index++) {
+        hardware_playfield->ypos_pointers[index] = &(hardware_playfield->buffer[index*480]);
+    }
 }
 
 void hardware_playfield_init()

@@ -27,10 +27,11 @@ _particle_render_draw_particles_inner:
     move.l 4(a0),a3  ; a3 = pointer to current particle
     move.w 10(a0),d3 ; d3 = hardware viewport left xpos
     move.l 12(a0),a2 ; a2 = current particle draw pointer
+    move.l 20(a0),a4 ; a4 = ypos pointers
     move.l 16(a0),a0 ; a0 = hardware_playfield_buffer
     move.l a0,usp
     move.w _logical_viewport_left_xpos,d4 ; d4 = logical viewport left xpos
-    lea _hardware_playfield_ypos_lookup,a4
+    ;lea _hardware_playfield_ypos_lookup,a4
     lea _hardware_viewport_xpos_lookup,a5
     lea _or_table,a0
     lea _or_table_mask_lookup,a6
@@ -71,10 +72,12 @@ _particle_render_draw_particles_inner:
     ; add the xpos offset to the ypos offset
     add.l d6,d2
 
+    move.l d2,a1
+
     ; get the absolute offset in memory where we need to start drawing the particle
     ; I think I can get rid of this!
-    move.l usp,a1
-    add.l d2,a1
+    ;move.l usp,a1
+    ;add.l d2,a1
 
     ; a1 now contains hardware_playfield_particle_ptr
     ; hardware_viewport_particle_xpos << 1 is preserved in d5

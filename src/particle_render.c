@@ -20,7 +20,8 @@ void particle_render_draw_particles()
         current_particle,
         hardware_viewport_left_xpos,
         current_particle_draw_pointer,
-        hardware_playfield_buffer
+        hardware_playfield_buffer,
+        hidden_hardware_playfield->ypos_pointers
     );
 }
 
