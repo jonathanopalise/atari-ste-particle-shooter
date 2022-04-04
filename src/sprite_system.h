@@ -30,6 +30,8 @@
 #define SPRITE_PATH_NONE 0
 #define SPRITE_PATH_TYPE_1 1
 #define SPRITE_PATH_TYPE_2 2
+#define SPRITE_PATH_TYPE_3 3
+#define SPRITE_PATH_TYPE_4 4
 
 struct Sprite {
 	int32_t precision_world_xpos;

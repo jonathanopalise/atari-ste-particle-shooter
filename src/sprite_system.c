@@ -91,33 +91,6 @@ void sprite_system_update_free_list()
     }
 }
 
-void sprite_system_manage_waves()
-{
-    // need a number of struct WaveEvent objects
-    // each specifying:
-    // - ticks until this event
-    // - sprite type index (e.g mine) - determines appearance/animation
-    // - initial xpos/ypos
-    // - sprite instance path index
-
-    int32_t precision_logical_viewport_left_xpos = logical_viewport_left_xpos << 16;
-
-    if ((logical_viewport_left_xpos & 31) == 31) {
-        /*sprite_system_spawn(
-            precision_logical_viewport_left_xpos + (VIEWPORT_WIDTH << 16),
-            random() % ((VIEWPORT_HEIGHT - 16) << 16),
-            SPRITE_BEHAVIOUR_MINE,
-            SPRITE_PATH_TYPE_1
-        );*/
-        sprite_system_spawn(
-            precision_logical_viewport_left_xpos + (VIEWPORT_WIDTH << 16),
-            60 << 16,
-            SPRITE_BEHAVIOUR_MINE,
-            SPRITE_PATH_TYPE_2
-        );
-    }
-}
-
 void sprite_system_spawn(
     int32_t precision_world_xpos,
     int32_t precision_world_ypos,

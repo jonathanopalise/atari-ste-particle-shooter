@@ -12,5 +12,7 @@ extern struct SpritePath sprite_paths[];
 void sprite_path_none_update_position(struct Sprite *sprite);
 void sprite_path_1_update_position(struct Sprite *sprite);
 void sprite_path_2_update_position(struct Sprite *sprite);
+void sprite_path_3_update_position(struct Sprite *sprite);
+void sprite_path_4_update_position(struct Sprite *sprite);
 
 #endif

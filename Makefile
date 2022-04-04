@@ -24,6 +24,8 @@ OBJECT_FILES =\
 	src/explosion_sprite.o\
 	src/sprite_behaviour.o\
 	src/generated/sin_cos.o\
+	src/wave_event.o\
+	src/wave_manager.o\
 	src/sprite_path.o\
 	src/sprite_system.o\
 	src/sprite_render.o\
@@ -82,6 +84,12 @@ src/generated/sin_cos.o: src/generated/sin_cos.c src/sin_cos.h
 
 src/generated/sin_cos.c: src/generate_sin_cos.php
 	$(PHP) src/generate_sin_cos.php src/generated/sin_cos.c
+
+src/wave_event.o: src/wave_event.c src/wave_event.h
+	$(CC) $(CFLAGS) -c src/wave_event.c -o src/wave_event.o
+
+src/wave_manager.o: src/wave_manager.c src/wave_manager.h
+	$(CC) $(CFLAGS) -c src/wave_manager.c -o src/wave_manager.o
 
 src/sprite_path.o: src/sprite_path.c src/sprite_path.h
 	$(CC) $(CFLAGS) -c src/sprite_path.c -o src/sprite_path.o

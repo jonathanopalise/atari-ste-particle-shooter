@@ -7,6 +7,7 @@
 #include "particle_system.h"
 #include "sprite_render.h"
 #include "sprite_system.h"
+#include "wave_manager.h"
 #include "collision_detection.h"
 #include "vbl_handler.h"
 
@@ -14,6 +15,7 @@ void game_loop()
 {
     particle_system_init();
     sprite_system_init();
+    wave_manager_init();
     hardware_playfield_init();
     initialise();
     logical_viewport_left_xpos = 0;
@@ -24,7 +26,8 @@ void game_loop()
             sprite_system_spawn(160 << 16, 100 << 16, SPRITE_BEHAVIOUR_PLAYER, SPRITE_PATH_NONE);
         }
 
-        sprite_system_manage_waves();
+        //sprite_system_manage_waves();
+        wave_manager_execute();
         sprite_system_update_system();
         particle_system_update_system();
         sprite_system_update_free_list();
