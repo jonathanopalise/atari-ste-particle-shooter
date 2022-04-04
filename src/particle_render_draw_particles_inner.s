@@ -32,14 +32,14 @@ _particle_render_draw_particles_inner:
     move.w _logical_viewport_left_xpos,d4 ; d4 = logical viewport left xpos
     lea _hardware_playfield_ypos_lookup,a4
     lea _hardware_viewport_xpos_lookup,a5
-    lea _or_table,a6
-    move.l a6,d7     ; d7 = or_table
+    lea _or_table,a0
     lea _or_table_mask_lookup,a6
 
     moveq.l #0,d0    ; number of particles drawn
     moveq.l #0,d6    ; clear top half to ensure correct functioning below
+    moveq.l #0,d7
 
-    cmp.l #0,a3
+    cmp.l d7,a3
     beq.s .alldone
 
 .handle_particle:
@@ -99,24 +99,14 @@ _particle_render_draw_particles_inner:
     move.w (a6,d5.w),d2 ; or_table_mask_lookup[hardware_viewport_particle_xpos]
 
     move.w TIME_TO_LIVE_OFS(a3),d5 ; time to live: 0 - 63
-    lsr.w #4,d5 ; reduce to 0-3
     move.b .exhaust_trail_colours(pc,d5.w),d5
-    add.w d5,d5
-    add.w d5,d5
     add.w d2,d5
-
-    ; we need the or_table in an address register!
-    ;move.l a3,usp
-    move.l d7,a0
 
     ; this is the movep plot pixel code
     movep.l 0(a1),d1  ; get pixel
     and.l (a0,d2.w),d1   ; apply AND
     or.l (a0,d5.w),d1   ; apply OR in WHITE
     movep.l d1,0(a1)  ; write back
-
-    ; restore address
-    ;move.l usp,a3
 
     ; now do the current particle draw pointer
     move.l a1,(a2)+
@@ -126,7 +116,7 @@ _particle_render_draw_particles_inner:
 .next_particle:
 
     move.l NEXT_PARTICLE_OFS(a3),a3   ; get pointer to particle
-    cmp.l #0,a3
+    cmp.l d7,a3
     bne.s .handle_particle 
 
 .alldone:
@@ -136,4 +126,15 @@ _particle_render_draw_particles_inner:
     rts
 
 .exhaust_trail_colours:
-    dc.b 4, 12, 14, 15
+    rept 16
+    dc.b 4*4
+    endr
+    rept 16
+    dc.b 12*4
+    endr
+    rept 16
+    dc.b 14*4
+    endr
+    rept 16
+    dc.b 15*4
+    endr
