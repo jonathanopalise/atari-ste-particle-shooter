@@ -35,6 +35,8 @@ _particle_render_draw_particles_inner:
     lea _or_table,a0
     lea _or_table_mask_lookup,a6
 
+    sub.w d3,d4 ; precalc below calculations
+
     moveq.l #0,d0    ; number of particles drawn
     moveq.l #0,d6    ; clear top half to ensure correct functioning below
     moveq.l #0,d7
@@ -48,47 +50,29 @@ _particle_render_draw_particles_inner:
     move.w PRECISION_WORLD_YPOS_OFS(a3),d2
     blt.s .next_particle ; if above top of screen, move to next particle
 
-    ; logical_viewport_particle_xpos (d5) =
-    ; current_particle->precision_world_xpos >> 16 (because of +2)
+    ; get current_particle->precision_world_xpos >> 16 (because of address +2)
     move.w (a3),d5
 
-    ; at this point:
-    ; d3 = hardware_viewport_left_xpos
-    ; d5 = logical_viewport_particle_xpos
-    ; d4 = logical_viewport_left_xpos
-    ;
-    ; d5 needs to be hardware_viewport_particle_xpos
-    ; hardware_viewport_left_xpos + (logical_viewport_particle_xpos - logical_viewport_left_xpos);
-
+    ; adjust xpos to location within hardware viewport
     sub.w d4,d5 ; logical_viewport_particle_xpos -= logical_viewport_left_xpos
-    add.w d3,d5 ; logical_viewport_particle_xpos += hardware_viewport_left_xpos
 
-    ; d5 should now contain hardware_viewport_particle_xpos
-    ; d4 is NOT available for reuse
-
-    ; now we need logical_viewport_particle_ypos (d2)
-    ;         and hardware_viewport_particle_xpos (d5)
-    ;         and hardware_playfield_ypos_lookup (a4) (uint32_t array)
-    ;         and hardware_viewport_xpos_lookup (a5) (uint16_t array)
-    ; 
-    ; hardware_playfield_ypos_lookup (a4)[logical_viewport_particle_ypos (d2)] +
-    ; hardware_viewport_xpos_lookup (a5)[hardware_viewport_particle_xpos (d5)]
-
-    ; generate offset into hardware_playfield_ypos_lookup
+    ; get the offset within the hardware viewport representing the particle ypos
+    ; (multiply ypos by 480)
+    ; if I have one of these for each buffer, can I put absolute pointers in them
+    ; and get rid of the a1 add below?
     add.w d2,d2
     add.w d2,d2
     move.l (a4,d2.w),d2 ; get value in hardware_playfield_ypos_lookup
 
-    ; we should preserve the d5 value here to use for the 
-    ; hardware_viewport_mask_lookup!
+    ; get the offset within the hardware viewport representing the adjusted xpos
     add.w d5,d5
-    move.w (a5,d5.w),d6 ; get value in hardware_viewport_xpos_lookup
+    move.w (a5,d5.w),d6
+
+    ; add the xpos offset to the ypos offset
     add.l d6,d2
 
-    ; d2 now contains hardware_playfield_particle_offset
-    ; WE CANNOT REUSE A3!
-    ; calculate hardware_playfield_particle_ptr
-
+    ; get the absolute offset in memory where we need to start drawing the particle
+    ; I think I can get rid of this!
     move.l usp,a1
     add.l d2,a1
 
@@ -99,13 +83,12 @@ _particle_render_draw_particles_inner:
     move.w (a6,d5.w),d2 ; or_table_mask_lookup[hardware_viewport_particle_xpos]
 
     move.w TIME_TO_LIVE_OFS(a3),d5 ; time to live: 0 - 63
-    move.b .exhaust_trail_colours(pc,d5.w),d5
-    add.w d2,d5
 
     ; this is the movep plot pixel code
     movep.l 0(a1),d1  ; get pixel
     and.l (a0,d2.w),d1   ; apply AND
-    or.l (a0,d5.w),d1   ; apply OR in WHITE
+    add.b .exhaust_trail_colours(pc,d5.w),d2
+    or.l (a0,d2.w),d1   ; apply OR in WHITE
     movep.l d1,0(a1)  ; write back
 
     ; now do the current particle draw pointer
