@@ -44,7 +44,7 @@ _particle_render_draw_particles_inner:
     beq.s .alldone
 
 .handle_particle:
-    ; get current_particle->precision_world_xpos >> 16 (because of address +2)
+    ; get current_particle->precision_world_ypos >> 16 (because of address +2)
     ; if above top of screen, move to next particle
     move.w PRECISION_WORLD_YPOS_OFS(a3),d2
     blt.s .next_particle
