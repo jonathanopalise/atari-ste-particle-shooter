@@ -19,7 +19,6 @@ _particle_render_draw_particles_inner:
     ; a5 = hardware viewport xpos lookup
     ; a6 = or table mask lookup
 
-    ; d0 = number of particles drawn
     ; d1 = scratch register for movep
     ; ...
     ; d7 = or table
@@ -36,7 +35,6 @@ _particle_render_draw_particles_inner:
 
     sub.w d3,d4 ; precalc below calculations
 
-    moveq.l #0,d0    ; number of particles drawn
     moveq.l #0,d6    ; clear top half to ensure correct functioning below
     moveq.l #0,d7
 
@@ -79,8 +77,6 @@ _particle_render_draw_particles_inner:
     ; store pointer to write location to erase later
     move.l a1,(a2)+
 
-    addq.l #1,d0     ; inc number of particles drawn
-
 .next_particle:
 
     move.l NEXT_PARTICLE_OFS(a3),a3   ; get pointer to particle
@@ -88,7 +84,13 @@ _particle_render_draw_particles_inner:
     bne.s .handle_particle 
 
 .alldone:
+
+    ; calculate number of particles drawn
+    move.l a2,d0
     movem.l (sp)+,d2-d7/a2-a6
+
+    sub.l 12(a7),d0
+    lsr.l #2,d0
 
     ; particles drawn returned in d0
     rts
