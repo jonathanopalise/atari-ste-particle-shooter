@@ -17,7 +17,7 @@ struct WaveEvent wave_events[] = {
         132,
         SPRITE_BEHAVIOUR_MINE,
         SPRITE_PATH_TYPE_1,
-        10
+        5
     },
     {
         VIEWPORT_WIDTH + 16,
@@ -31,14 +31,14 @@ struct WaveEvent wave_events[] = {
         112,
         SPRITE_BEHAVIOUR_MINE,
         SPRITE_PATH_TYPE_1,
-        10
+        5
     },
     {
         VIEWPORT_WIDTH + 16,
         92,
         SPRITE_BEHAVIOUR_MINE,
         SPRITE_PATH_TYPE_1,
-        50
+        30
     },
     // next
     {
@@ -46,42 +46,42 @@ struct WaveEvent wave_events[] = {
         32,
         SPRITE_BEHAVIOUR_MINE,
         SPRITE_PATH_TYPE_2,
-        16
+        8
     },
     {
         VIEWPORT_WIDTH + 16,
         32,
         SPRITE_BEHAVIOUR_MINE,
         SPRITE_PATH_TYPE_2,
-        16
+        8
     },
     {
         VIEWPORT_WIDTH + 16,
         32,
         SPRITE_BEHAVIOUR_MINE,
         SPRITE_PATH_TYPE_2,
-        16
+        8
     },
     {
         VIEWPORT_WIDTH + 16,
         32,
         SPRITE_BEHAVIOUR_MINE,
         SPRITE_PATH_TYPE_2,
-        16
+        8
     },
     {
         VIEWPORT_WIDTH + 16,
         32,
         SPRITE_BEHAVIOUR_MINE,
         SPRITE_PATH_TYPE_2,
-        16
+        8
     },
     {
         VIEWPORT_WIDTH + 16,
         32,
         SPRITE_BEHAVIOUR_MINE,
         SPRITE_PATH_TYPE_2,
-        48
+        24
     },
     // next
     {
@@ -89,42 +89,42 @@ struct WaveEvent wave_events[] = {
         148,
         SPRITE_BEHAVIOUR_MINE,
         SPRITE_PATH_TYPE_3,
-        16
+        8
     },
     {
         VIEWPORT_WIDTH + 16,
         148,
         SPRITE_BEHAVIOUR_MINE,
         SPRITE_PATH_TYPE_3,
-        16
+        8
     },
     {
         VIEWPORT_WIDTH + 16,
         148,
         SPRITE_BEHAVIOUR_MINE,
         SPRITE_PATH_TYPE_3,
-        16
+        8
     },
     {
         VIEWPORT_WIDTH + 16,
         148,
         SPRITE_BEHAVIOUR_MINE,
         SPRITE_PATH_TYPE_3,
-        16
+        8
     },
     {
         VIEWPORT_WIDTH + 16,
         148,
         SPRITE_BEHAVIOUR_MINE,
         SPRITE_PATH_TYPE_3,
-        16
+        8
     },
     {
         VIEWPORT_WIDTH + 16,
         148,
         SPRITE_BEHAVIOUR_MINE,
         SPRITE_PATH_TYPE_3,
-        100
+        24
     },
 
     // next
@@ -132,36 +132,36 @@ struct WaveEvent wave_events[] = {
         VIEWPORT_WIDTH + 16,
         92,
         SPRITE_BEHAVIOUR_MINE,
-        SPRITE_PATH_TYPE_4,
+        SPRITE_PATH_TYPE_2,
         0
     },
     {
         VIEWPORT_WIDTH + 16,
         52,
         SPRITE_BEHAVIOUR_MINE,
-        SPRITE_PATH_TYPE_4,
+        SPRITE_PATH_TYPE_2,
         0
     },
     {
         VIEWPORT_WIDTH + 16,
         12,
         SPRITE_BEHAVIOUR_MINE,
-        SPRITE_PATH_TYPE_4,
+        SPRITE_PATH_TYPE_2,
         0
     },
     {
         VIEWPORT_WIDTH + 16,
         132,
         SPRITE_BEHAVIOUR_MINE,
-        SPRITE_PATH_TYPE_4,
+        SPRITE_PATH_TYPE_2,
         0
     },
     {
         VIEWPORT_WIDTH + 16,
         172,
         SPRITE_BEHAVIOUR_MINE,
-        SPRITE_PATH_TYPE_4,
-        50
+        SPRITE_PATH_TYPE_2,
+        24
     },
 
     // next
@@ -169,70 +169,70 @@ struct WaveEvent wave_events[] = {
         VIEWPORT_WIDTH + 16,
         42,
         SPRITE_BEHAVIOUR_MINE,
-        SPRITE_PATH_TYPE_5,
+        SPRITE_PATH_TYPE_3,
+        10
+    },
+    {
+        VIEWPORT_WIDTH + 16,
+        142,
+        SPRITE_BEHAVIOUR_MINE,
+        SPRITE_PATH_TYPE_3,
+        10
+    },
+    {
+        VIEWPORT_WIDTH + 16,
+        42,
+        SPRITE_BEHAVIOUR_MINE,
+        SPRITE_PATH_TYPE_3,
+        10
+    },
+    {
+        VIEWPORT_WIDTH + 16,
+        142,
+        SPRITE_BEHAVIOUR_MINE,
+        SPRITE_PATH_TYPE_3,
+        10
+    },
+    {
+        VIEWPORT_WIDTH + 16,
+        42,
+        SPRITE_BEHAVIOUR_MINE,
+        SPRITE_PATH_TYPE_3,
+        10
+    },
+    {
+        VIEWPORT_WIDTH + 16,
+        142,
+        SPRITE_BEHAVIOUR_MINE,
+        SPRITE_PATH_TYPE_3,
+        10
+    },
+    {
+        VIEWPORT_WIDTH + 16,
+        42,
+        SPRITE_BEHAVIOUR_MINE,
+        SPRITE_PATH_TYPE_3,
         20
     },
     {
         VIEWPORT_WIDTH + 16,
         142,
         SPRITE_BEHAVIOUR_MINE,
-        SPRITE_PATH_TYPE_5,
+        SPRITE_PATH_TYPE_3,
         20
     },
     {
         VIEWPORT_WIDTH + 16,
         42,
         SPRITE_BEHAVIOUR_MINE,
-        SPRITE_PATH_TYPE_5,
+        SPRITE_PATH_TYPE_3,
         20
     },
     {
         VIEWPORT_WIDTH + 16,
         142,
         SPRITE_BEHAVIOUR_MINE,
-        SPRITE_PATH_TYPE_5,
-        20
-    },
-    {
-        VIEWPORT_WIDTH + 16,
-        42,
-        SPRITE_BEHAVIOUR_MINE,
-        SPRITE_PATH_TYPE_5,
-        20
-    },
-    {
-        VIEWPORT_WIDTH + 16,
-        142,
-        SPRITE_BEHAVIOUR_MINE,
-        SPRITE_PATH_TYPE_5,
-        20
-    },
-    {
-        VIEWPORT_WIDTH + 16,
-        42,
-        SPRITE_BEHAVIOUR_MINE,
-        SPRITE_PATH_TYPE_5,
-        20
-    },
-    {
-        VIEWPORT_WIDTH + 16,
-        142,
-        SPRITE_BEHAVIOUR_MINE,
-        SPRITE_PATH_TYPE_5,
-        20
-    },
-    {
-        VIEWPORT_WIDTH + 16,
-        42,
-        SPRITE_BEHAVIOUR_MINE,
-        SPRITE_PATH_TYPE_5,
-        20
-    },
-    {
-        VIEWPORT_WIDTH + 16,
-        142,
-        SPRITE_BEHAVIOUR_MINE,
-        SPRITE_PATH_TYPE_5,
+        SPRITE_PATH_TYPE_3,
         20
     },
 

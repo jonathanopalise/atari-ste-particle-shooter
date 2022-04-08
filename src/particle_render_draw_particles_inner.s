@@ -65,6 +65,7 @@ _particle_render_draw_particles_inner:
 
     ; derive offset within or table
     move.w (a6,d5.w),d2
+
     move.w TIME_TO_LIVE_OFS(a3),d5 ; time to live: 0 - 63
 
     ; plot the pixel
@@ -97,14 +98,14 @@ _particle_render_draw_particles_inner:
 
 .exhaust_trail_colours:
     rept 16
-    dc.b 4*4
+    dc.b 2*4
     endr
     rept 16
-    dc.b 12*4
+    dc.b 6*4
+    endr
+    rept 16
+    dc.b 10*4
     endr
     rept 16
     dc.b 14*4
-    endr
-    rept 16
-    dc.b 15*4
     endr

@@ -151,7 +151,7 @@ src/generated/or_table.c: src/generate_or_table.php
 src/generated/palette.o: src/generated/palette.s
 	$(VASM) $(VASM_OPTS) src/generated/palette.s -Felf -o src/generated/palette.o
 
-src/generated/palette.s: $(ASSETS_GIF) src/generate_palette.php
+src/generated/palette.s: $(ASSETS_GIF) src/generate_palette.php assets/clouds.gif
 	$(PHP) src/generate_palette.php assets/clouds.gif src/generated/palette.s
 
 src/initialise.o: src/initialise.s
