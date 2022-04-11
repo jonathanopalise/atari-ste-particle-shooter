@@ -17,7 +17,7 @@ void player_sprite_init_attributes(struct Sprite *sprite)
    
     player_sprite_attributes = (struct PlayerSpriteAttributes *)sprite->additional_data;
     player_sprite_attributes->last_joy_fire = 0;
-    player_sprite_attributes->frames_until_next_bullet = 10;
+    player_sprite_attributes->frames_until_next_bullet = 5;
 
     sprite->image_index = SPRITE_IMAGE_PLAYER;
 }
@@ -38,21 +38,21 @@ void player_sprite_update_attributes(struct Sprite *sprite)
 
     if (joy_up) {
         if (sprite->precision_world_ypos > (BORDER_SIZE<<16)) {
-            sprite->precision_world_ypos -= 1<<16;
+            sprite->precision_world_ypos -= 2<<16;
         }
     } else if (joy_down) {
         if (sprite->precision_world_ypos < ((VIEWPORT_HEIGHT-(BORDER_SIZE+SPRITE_HEIGHT))<<16)) {
-            sprite->precision_world_ypos += 1<<16;
+            sprite->precision_world_ypos += 2<<16;
         }
     }
 
     if (joy_left) {
         if (sprite->precision_world_xpos > ((logical_viewport_left_xpos+BORDER_SIZE)<<16)) {
-            sprite->precision_world_xpos -= 2<<16;
+            sprite->precision_world_xpos -= 3<<16;
         }
     } else if (joy_right) {
         if (sprite->precision_world_xpos < ((logical_viewport_left_xpos+(VIEWPORT_WIDTH-(BORDER_SIZE+SPRITE_WIDTH)))<<16)) {
-            sprite->precision_world_xpos += 1<<16;
+            sprite->precision_world_xpos += 2<<16;
         }
     }
 
@@ -61,7 +61,7 @@ void player_sprite_update_attributes(struct Sprite *sprite)
 
     if ((sprite_attributes->joy_fire && !(sprite_attributes->last_joy_fire)) && !(sprite_attributes->frames_until_next_bullet)) {
         player_sprite_fire_bullet(sprite);
-        sprite_attributes->frames_until_next_bullet = 10;
+        sprite_attributes->frames_until_next_bullet = 5;
     }
 
     if (logical_viewport_left_xpos & 1) {

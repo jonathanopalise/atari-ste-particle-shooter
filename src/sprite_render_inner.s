@@ -111,7 +111,7 @@ _sprite_render_inner_draw:
     move.w #$0207,$ffff8a3a.w           ; hop/op: read from source, source | destination
 
     addq.l #2,a0                        ; move source to next bitplane
-    drawplane
+    ;drawplane
     addq.l #2,a1                        ; move destination to next bitplane
     addq.l #2,a0                        ; move source to next bitplane
     drawplane

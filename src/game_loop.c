@@ -31,7 +31,7 @@ void game_loop()
         sprite_system_update_system();
         particle_system_update_system();
         sprite_system_update_free_list();
-        particle_system_update_free_list();
+        //particle_system_update_free_list();
         *((volatile uint16_t *)0xffff8240) = 0x666; // grey
         collision_detection_handle_player_bullet_collisions();
         *((volatile uint16_t *)0xffff8240) = 0x040; // green
