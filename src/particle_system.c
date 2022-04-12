@@ -35,9 +35,6 @@ void particle_system_update_system()
     int32_t precision_logical_viewport_left_xpos = logical_viewport_left_xpos << 16;
     int32_t precision_logical_viewport_right_xpos = precision_logical_viewport_left_xpos + (VIEWPORT_WIDTH << 16);
 
-    struct Particle *tmp_particle;
-    struct Particle **last_unkilled_particle_next_ptr = &first_active_particle;
-
     current_collidable_particle_ptr = collidable_particle_ptrs;
 
     while (current_particle) {
@@ -65,25 +62,13 @@ void particle_system_update_system()
             }
         }
 
-        if (!current_particle->active) {
-            // remove dead particle from the active list
-            *last_unkilled_particle_next_ptr = current_particle->next;
-
-            // add dead particle to the start of the free list
-            tmp_particle = first_free_particle;
-            first_free_particle = current_particle;
-            current_particle = current_particle->next; 
-            first_free_particle->next = tmp_particle;
-        } else {
-            last_unkilled_particle_next_ptr = &(current_particle->next);
-            current_particle = current_particle->next;
-        }
+        current_particle = current_particle->next;
     }
 
     *current_collidable_particle_ptr = NULL;
 }
 
-/*void particle_system_update_free_list()
+void particle_system_update_free_list()
 {
     struct Particle *current_particle = first_active_particle;
     struct Particle *tmp_particle;
@@ -104,7 +89,7 @@ void particle_system_update_system()
             current_particle = current_particle->next;
         }
     }
-}*/
+}
 
 void particle_system_spawn(
     int32_t precision_world_xpos,
