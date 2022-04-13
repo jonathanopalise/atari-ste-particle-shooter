@@ -28,11 +28,12 @@ void game_loop()
 
         //sprite_system_manage_waves();
         wave_manager_execute();
+        // is it possible that collision detection can spawn particles out of bounds?
+        collision_detection_handle_player_bullet_collisions();
         sprite_system_update_system();
         particle_system_update_system();
-        sprite_system_update_free_list();
         *((volatile uint16_t *)0xffff8240) = 0x666; // grey
-        collision_detection_handle_player_bullet_collisions();
+        sprite_system_update_free_list();
         particle_system_update_free_list();
         *((volatile uint16_t *)0xffff8240) = 0x040; // green
         particle_render_erase_particles();

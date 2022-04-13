@@ -35,17 +35,16 @@ _particle_render_draw_particles_inner:
 
     sub.w d3,d4 ; precalc below calculations
 
-    moveq.l #0,d6    ; clear top half to ensure correct functioning below
-    moveq.l #0,d7
-
-    cmp.l d7,a3
-    beq.s .alldone
+    move.w #99,d7   ; MUST MATCH PARTICLE_COUNT in particle_common.h
 
 .handle_particle:
+    move.w TIME_TO_LIVE_OFS(a3),d6
+    beq.s .next_particle
+
     ; get current_particle->precision_world_ypos >> 16 (because of address +2)
     ; if above top of screen, move to next particle
     move.w PRECISION_WORLD_YPOS_OFS(a3),d2
-    blt.s .next_particle
+    ;blt.s .next_particle
 
     ; get current_particle->precision_world_xpos >> 16 (because of address +2)
     move.w (a3),d5
@@ -66,12 +65,10 @@ _particle_render_draw_particles_inner:
     ; derive offset within or table
     move.w (a6,d5.w),d2
 
-    move.w TIME_TO_LIVE_OFS(a3),d5 ; time to live: 0 - 63
-
     ; plot the pixel
     movep.l 0(a1),d1
     and.l (a0,d2.w),d1
-    add.b .exhaust_trail_colours(pc,d5.w),d2
+    add.b .exhaust_trail_colours(pc,d6.w),d2
     or.l (a0,d2.w),d1
     movep.l d1,0(a1)
 
@@ -80,9 +77,8 @@ _particle_render_draw_particles_inner:
 
 .next_particle:
 
-    move.l NEXT_PARTICLE_OFS(a3),a3   ; get pointer to particle
-    cmp.l d7,a3
-    bne.s .handle_particle 
+    lea 26(a3),a3
+    dbra d7,.handle_particle
 
 .alldone:
 

@@ -11,7 +11,7 @@
 
 void particle_render_draw_particles()
 {
-    struct Particle *current_particle = first_active_particle;
+    struct Particle *current_particle = particles;
     uint8_t *hardware_playfield_buffer = hidden_hardware_playfield->buffer;
     uint8_t **current_particle_draw_pointer = hidden_hardware_playfield->particle_draw_pointers;
     uint16_t hardware_viewport_left_xpos = hardware_viewport_get_left_xpos();

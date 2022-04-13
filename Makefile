@@ -1,5 +1,5 @@
 CC = /home/jonathan/brown/bin/m68k-atarisuperbrowner-elf-gcc-11.2.0
-CFLAGS = -D__ATARI__ -D__M68000__ -DELF_CONFIG_STACK=1024 -flto -fleading-underscore -fomit-frame-pointer -O2 -m68000 -Wl,--traditional-format -Wall
+CFLAGS = -D__ATARI__ -D__M68000__ -DELF_CONFIG_STACK=1024 -fleading-underscore -g -O3 -flto -fomit-frame-pointer -m68000 -Wl,--traditional-format -Wall
 VASM = vasmm68k_mot
 VASM_OPTS = -no-opt
 VLINK = vlink
@@ -39,8 +39,8 @@ OBJECT_FILES =\
 	src/initialise.o
 
 bin/shooter.prg: $(OBJECT_FILES)
-	$(CC) -o src/shooter.elf libcxx/brownboot.o libcxx/browncrti.o libcxx/browncrtn.o libcxx/browncrt++.o libcxx/zerolibc.o libcxx/zerocrtfini.o $(OBJECT_FILES) -O2 -Wl,--emit-relocs -Wl,-e_start -Ttext=0 -nostartfiles -m68000 -O3 -fomit-frame-pointer -D__ATARI__ -D__M68000__ -DELF_CONFIG_STACK=1024 -flto -fstrict-aliasing -fcaller-saves -ffunction-sections -fdata-sections -fleading-underscore
-	./brown.out -i src/shooter.elf -o bin/shooter.prg
+	$(CC) -o src/shooter.elf libcxx/brownboot.o libcxx/browncrti.o libcxx/browncrtn.o libcxx/browncrt++.o libcxx/zerolibc.o libcxx/zerocrtfini.o $(OBJECT_FILES) -g -O3 -flto -Wl,--emit-relocs -Wl,-e_start -Ttext=0 -nostartfiles -m68000 -fomit-frame-pointer -D__ATARI__ -D__M68000__ -DELF_CONFIG_STACK=1024 -fstrict-aliasing -fcaller-saves -ffunction-sections -fdata-sections -fleading-underscore
+	./brown.out -s -i src/shooter.elf -o bin/shooter.prg
 	chmod +x bin/shooter.prg
 
 src/shooter.o: src/shooter.c $(OBJECT_FILES)

@@ -2,6 +2,7 @@
 #define __PARTICLE_SYSTEM_H
 
 #include <inttypes.h>
+#include "particle_common.h"
 
 #define PARTICLE_TYPE_GENERIC 0
 #define PARTICLE_TYPE_PLAYER_EXHAUST 1
@@ -18,7 +19,7 @@ struct Particle {
     struct Particle *next; // offset 22
 };
 
-extern struct Particle *first_active_particle;
+extern struct Particle particles[PARTICLE_COUNT];
 
 void particle_system_init();
 void particle_system_update_system();
@@ -31,5 +32,6 @@ void particle_system_spawn(
     uint16_t time_to_live,
     uint16_t type
 );
+
 
 #endif

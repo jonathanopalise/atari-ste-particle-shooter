@@ -16,16 +16,7 @@ struct Sprite *current_collidable_sprite;
 
 void collision_detection_handle_player_bullet_collisions()
 {
-    /*current_collidable_particle_ptr = collidable_particle_ptrs;
-    struct Particle *current_particle = first_active_particle;
-    while (current_particle) {
-        if (current_particle->active && current_particle->type == PARTICLE_TYPE_PLAYER_BULLET) {
-            *current_collidable_particle_ptr = current_particle;
-            current_collidable_particle_ptr++;
-        }
-        current_particle = current_particle->next;
-    }
-    *current_collidable_particle_ptr = NULL;*/
+    struct SpriteBehaviour *sprite_behaviour;
 
     current_collidable_sprite_ptr = collidable_sprite_ptrs;
     struct Sprite *current_sprite = first_active_sprite;
@@ -47,14 +38,17 @@ void collision_detection_handle_player_bullet_collisions()
         current_collidable_particle_ptr = collidable_particle_ptrs;
         current_collidable_particle = *current_collidable_particle_ptr;
         while (current_collidable_particle) {
-            if (current_collidable_sprite->active && current_collidable_particle->active) {
+            if (current_collidable_sprite->active && current_collidable_particle->time_to_live) {
                 if ((current_collidable_particle->precision_world_xpos > current_collidable_sprite->precision_world_xpos) &&
                     (current_collidable_particle->precision_world_xpos < (current_collidable_sprite->precision_world_xpos + (SPRITE_WIDTH << 16))) &&
                     (current_collidable_particle->precision_world_ypos > current_collidable_sprite->precision_world_ypos) &&
                     (current_collidable_particle->precision_world_ypos < (current_collidable_sprite->precision_world_ypos + (SPRITE_HEIGHT << 16)))
                 ) {
-                    sprite_behaviours[current_collidable_sprite->behaviour_index].handle_player_bullet_collision(current_collidable_sprite);
-                    current_collidable_particle->active = 0;
+                    sprite_behaviour = &sprite_behaviours[current_collidable_sprite->behaviour_index];
+                    if (sprite_behaviour->handle_player_bullet_collision) {
+                        sprite_behaviour->handle_player_bullet_collision(current_collidable_sprite);
+                        current_collidable_particle->time_to_live = 0;
+                    }
                 }
             }
 
